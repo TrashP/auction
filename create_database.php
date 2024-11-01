@@ -12,7 +12,7 @@ $mysqli = new mysqli($servername, $username, $password);
 
 // Check connection
 if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
+        die("Connection failed: " . $mysqli->connect_error);
 }
 echo "Connected successfully. <br>";
 
@@ -23,13 +23,13 @@ $sql = "DROP DATABASE IF EXISTS $newDatabase;
         DEFAULT COLLATE utf8_general_ci;";
 
 if ($mysqli->multi_query($sql)) {
-    echo "Database '$newDatabase' created successfully.<br>";
-    // Clear the result set from multi_query
-    while ($mysqli->next_result()) {
-        ;
-    }
+        echo "Database '$newDatabase' created successfully.<br>";
+        // Clear the result set from multi_query
+        while ($mysqli->next_result()) {
+                ;
+        }
 } else {
-    die("Error creating database: " . $mysqli->error);
+        die("Error creating database: " . $mysqli->error);
 }
 
 // Select the new database
@@ -40,13 +40,14 @@ $sql = "CREATE TABLE IF NOT EXISTS Items
         (
         itemID INT AUTO_INCREMENT PRIMARY KEY,
         itemName VARCHAR(255) NOT NULL,
-        itemDescription VARCHAR(255)
+        itemDescription VARCHAR(255),
+        category ENUM('Art & Collectibles', 'Electronics & Gadgets', 'Fashion & Accessories', 'Home & Garden', 'Automotive & Vehicles', 'Sports & Outdoors', 'Real Estate & Property', 'Books, Movies & Music', 'Toys & Games', 'Business & Industrial Equipment', 'Health & Beauty', 'Hobbies & Crafts', 'Pet Supplies', 'Industrial & Scientific', 'Charity & Fundraising') NOT NULL
         )";
 
 if ($mysqli->query($sql) === TRUE) {
-    echo "Table 'Items' created successfully.<br>";
+        echo "Table 'Items' created successfully.<br>";
 } else {
-    die("Error creating table: " . $mysqli->error);
+        die("Error creating table: " . $mysqli->error);
 }
 
 // Create the 'Bids' table if it does not exist
@@ -58,9 +59,9 @@ $sql = "CREATE TABLE IF NOT EXISTS Bids
         )";
 
 if ($mysqli->query($sql) === TRUE) {
-    echo "Table 'Bids' created successfully.<br>";
+        echo "Table 'Bids' created successfully.<br>";
 } else {
-    die("Error creating table: " . $mysqli->error);
+        die("Error creating table: " . $mysqli->error);
 }
 
 // Create the 'Auctions' table if it does not exist
@@ -74,9 +75,9 @@ $sql = "CREATE TABLE IF NOT EXISTS Auctions
         )";
 
 if ($mysqli->query($sql) === TRUE) {
-    echo "Table 'Auctions' created successfully.<br>";
+        echo "Table 'Auctions' created successfully.<br>";
 } else {
-    die("Error creating table: " . $mysqli->error);
+        die("Error creating table: " . $mysqli->error);
 }
 
 // Create the 'Users' table if it does not exist
@@ -92,22 +93,22 @@ $sql = "CREATE TABLE IF NOT EXISTS Users
         )";
 
 if ($mysqli->query($sql) === TRUE) {
-    echo "Table 'Users' created successfully.<br>";
+        echo "Table 'Users' created successfully.<br>";
 } else {
-    die("Error creating table: " . $mysqli->error);
+        die("Error creating table: " . $mysqli->error);
 }
 
 // Add sample data to database
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription)
-        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
+        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion & Accessories');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription)
-        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
+        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies & Music');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription)
-        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
+        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art & Collectibles');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
