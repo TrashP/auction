@@ -68,9 +68,12 @@ if ($mysqli->query($sql) === TRUE) {
 $sql = "CREATE TABLE IF NOT EXISTS Auctions
         (
         auctionID INT AUTO_INCREMENT PRIMARY KEY,
+        userID INT NOT NULL,
+        itemID INT NOT NULL,
         auctionDate DATE NOT NULL,
         startPriceGBP INT NOT NULL,
         reservePriceGBP INT NOT NULL,
+        highestBidderID INT,
         quantity INT NOT NULL
         )";
 
@@ -86,7 +89,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Users
         userID INT AUTO_INCREMENT PRIMARY KEY,
         firstName VARCHAR(255) NOT NULL,
         lastName VARCHAR(255) NOT NULL,
-        dateOfBirth DATE,
+        dateOfBirth DATE NOT NULL,
         email VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
         role ENUM('Buyer', 'Seller')
@@ -119,16 +122,16 @@ $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
         VALUES (5, 2, 2000);";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Auctions (auctionID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (1, '2024-10-30', 40000, 80000, 1);";
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 1);";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Auctions (auctionID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (2, '2024-11-01', 1000, 10000, 1);";
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES (2, 2, 2, '2024-11-01', 1000, 10000, 1);";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Auctions (auctionID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (3, '2024-11-02', 500, 2000, 2);";
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES (3, 3, 3, '2024-11-02', 500, 2000, 2);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
