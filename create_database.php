@@ -122,12 +122,12 @@ $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
         VALUES (5, 2, 2000);";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 1);";
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
+        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 4, 1);";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (2, 2, 2, '2024-11-01', 1000, 10000, 1);";
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
+        VALUES (2, 2, 2, '2024-11-01', 1000, 10000, 5, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
