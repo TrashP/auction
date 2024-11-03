@@ -123,9 +123,19 @@ if (!isset($_GET['page'])) {
    decide on appropriate default value/default query to make. */
 
 // Base sql query for browsing auction items
-$sql = "SELECT *
-        FROM Auctions
+$sql = "SELECT 
+          Items.itemID, 
+          itemName, 
+          itemDescription, 
+          GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
+          (SELECT COUNT(*)
+          FROM Bids
+          INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
+          WHERE a1.auctionID = Bids.auctionID) AS numBids,
+          auctionDate
+        FROM Auctions a1
         INNER JOIN Items USING (itemID)
+        LEFT JOIN Bids USING (auctionID)
         WHERE 1=1";
 
 // Adding conditions based on keyword and category search
@@ -148,28 +158,12 @@ if ($ordering == "pricelow") {
 }
 
 $result = $conn->query($sql);
-if ($result === false) {
-  // Output error message
-  echo "Error in query: " . $conn->error;
-} else {
-  // Check if there are any results
-  if ($result->num_rows > 0) {
-    // Output data for each row
-    while ($row = $result->fetch_assoc()) {
-      echo "Auction ID: " . $row['category'] . "<br>";
-      echo "Item Name: " . $row['itemName'] . "<br>";
-      echo "Current Price: $" . $row['startPriceGBP'] . "<br>";
-      echo "Auction Date: " . $row['auctionDate'] . "<br><br>";
-    }
-  } else {
-    echo "No results found.";
-  }
-}
+
 $conn->close();
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
-$num_results = 96; // TODO: Calculate me for real
+$num_results = $result->num_rows; // TODO: Calculate me for real
 $results_per_page = 10;
 $max_page = ceil($num_results / $results_per_page);
 ?>
@@ -177,32 +171,27 @@ $max_page = ceil($num_results / $results_per_page);
 <div class="container mt-5">
 
   <!-- TODO: If result set is empty, print an informative message. Otherwise... -->
-
+  <?php
+  if ($num_results == 0) {
+    echo "No results found";
+  }
+  ?>
   <ul class="list-group">
 
     <!-- TODO: Use a while loop to print a list item for each auction listing
      retrieved from the query -->
 
     <?php
-    // Demonstration of what listings will look like using dummy data.
-    $item_id = "87021";
-    $title = "Dummy title";
-    $description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget rutrum ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus feugiat, ipsum vel egestas elementum, sem mi vestibulum eros, et facilisis dui nisi eget metus. In non elit felis. Ut lacus sem, pulvinar ultricies pretium sed, viverra ac sapien. Vivamus condimentum aliquam rutrum. Phasellus iaculis faucibus pellentesque. Sed sem urna, maximus vitae cursus id, malesuada nec lectus. Vestibulum scelerisque vulputate elit ut laoreet. Praesent vitae orci sed metus varius posuere sagittis non mi.";
-    $current_price = 30;
-    $num_bids = 1;
-    $end_date = new DateTime('2020-09-16T11:00:00');
+    if ($result === false) {
+      // Output error message
+      echo "Error in query: " . $conn->error;
+    } else {
+      // Output data for each row
+      while ($row = $result->fetch_assoc()) {
+        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+      }
+    }
 
-    // This uses a function defined in utilities.php
-    print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-
-    $item_id = "516";
-    $title = "Different title";
-    $description = "Very short description.";
-    $current_price = 13.50;
-    $num_bids = 3;
-    $end_date = new DateTime('2020-11-02T00:00:00');
-
-    print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
     ?>
 
   </ul>
