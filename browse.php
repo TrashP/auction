@@ -164,7 +164,8 @@ $conn->close();
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
 $num_results = $result->num_rows; // TODO: Calculate me for real
-$results_per_page = 10;
+$results_per_page = 2;
+$curr_page = isset($_GET['page']) ? (int) $_GET['page'] : 1; // Get current page from URL or default to 1
 $max_page = ceil($num_results / $results_per_page);
 ?>
 
@@ -187,8 +188,15 @@ $max_page = ceil($num_results / $results_per_page);
       echo "Error in query: " . $conn->error;
     } else {
       // Output data for each row
+      $skip = $results_per_page * ($curr_page - 1);
+      $res = $results_per_page;
       while ($row = $result->fetch_assoc()) {
-        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+        if ($skip == 0 and $res != 0) {
+          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+          $res -= 1;
+        } else {
+          $skip -= 1;
+        }
       }
     }
 
