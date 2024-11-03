@@ -11,6 +11,18 @@
      Search/sort specs are passed to this page through parameters in the URL
      (GET method of passing data to a page). -->
     <form method="get" action="browse.php">
+      <?php
+      $userSearch = '';
+      $userCategory = '';
+      $userSort = '';
+
+      if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        $userSearch = htmlspecialchars($_GET['keyword']);
+        $userCategory = htmlspecialchars($_GET['cat']);
+        $userSort = htmlspecialchars($_GET['order_by']);
+      }
+      ?>
+
       <div class="row">
         <div class="col-md-5 pr-0">
           <div class="form-group">
@@ -22,14 +34,14 @@
                 </span>
               </div>
               <input type="text" class="form-control border-left-0" name="keyword" id="keyword"
-                placeholder="Search for anything">
+                placeholder="Search for anything" value="<?php echo $userSearch; ?>">
             </div>
           </div>
         </div>
         <div class="col-md-3 pr-0">
           <div class="form-group">
             <label for="cat" class="sr-only">Search within:</label>
-            <select class="form-control" name="cat" id="cat">
+            <select class="form-control" name="cat" id="cat" value="<?php echo $userCategory; ?>">
               <option selected value="all">All categories</option>
               <?php
               // Connect to database to dynamically create categories
@@ -42,7 +54,7 @@
               if ($result->num_rows > 0) {
                 // Output data from each row as an option element
                 while ($row = $result->fetch_assoc()) {
-                  echo "<option value='" . $row["category"] . "'>" . htmlspecialchars($row["category"]) . "</option>";
+                  echo "<option value='" . $row["category"] . "' " . (($userCategory == $row["category"]) ? "selected" : "") . ">" . htmlspecialchars($row["category"]) . "</option>";
                 }
               }
 
@@ -55,9 +67,11 @@
           <div class="form-inline">
             <label class="mx-2" for="order_by">Sort by:</label>
             <select class="form-control" name="order_by" id="order_by">
-              <option selected value="pricelow">Price (low to high)</option>
-              <option value="pricehigh">Price (high to low)</option>
-              <option value="date">Soonest expiry</option>
+              <option selected value="pricelow" <?php echo ($userSort == 'pricelow') ? 'selected' : '' ?>>Price (low to
+                high)</option>
+              <option value="pricehigh" <?php echo ($userSort == 'pricehigh') ? 'selected' : '' ?>>Price (high to low)
+              </option>
+              <option value="date" <?php echo ($userSort == 'date') ? 'selected' : '' ?>>Soonest expiry</option>
             </select>
           </div>
         </div>
