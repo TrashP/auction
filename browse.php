@@ -21,26 +21,19 @@
                   <i class="fa fa-search"></i>
                 </span>
               </div>
-              <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+              <input type="text" class="form-control border-left-0" name="keyword" id="keyword"
+                placeholder="Search for anything">
             </div>
           </div>
         </div>
         <div class="col-md-3 pr-0">
           <div class="form-group">
             <label for="cat" class="sr-only">Search within:</label>
-            <select class="form-control" id="cat">
+            <select class="form-control" name="cat" id="cat">
               <option selected value="all">All categories</option>
               <?php
               // Connect to database to dynamically create categories
-              $servername = "localhost";
-              $username = "root";
-              $password = "";
-              $dbname = "Auction";
-
-              $conn = new mysqli($servername, $username, $password, $dbname);
-              if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-              }
+              require 'db_connection.php';
 
               // SQL query to fetch categories
               $sql = "SELECT DISTINCT category FROM Items";
@@ -61,7 +54,7 @@
         <div class="col-md-3 pr-0">
           <div class="form-inline">
             <label class="mx-2" for="order_by">Sort by:</label>
-            <select class="form-control" id="order_by">
+            <select class="form-control" name="order_by" id="order_by">
               <option selected value="pricelow">Price (low to high)</option>
               <option value="pricehigh">Price (high to low)</option>
               <option value="date">Soonest expiry</option>
@@ -79,6 +72,11 @@
 </div>
 
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require "db_connection.php";
+
 // Retrieve these from the URL
 if (!isset($_GET['keyword'])) {
   // TODO: Define behavior if a keyword has not been specified.
@@ -96,7 +94,7 @@ if (!isset($_GET['cat'])) {
 
 if (!isset($_GET['order_by'])) {
   // TODO: Define behavior if an order_by value has not been specified.
-  $ordering = "Price (low to high)";
+  $ordering = "pricelow";
 } else {
   $ordering = $_GET['order_by'];
 }
@@ -106,7 +104,6 @@ if (!isset($_GET['page'])) {
 } else {
   $curr_page = $_GET['page'];
 }
-
 /* TODO: Use above values to construct a query. Use this query to 
    retrieve data from the database. (If there is no form data entered,
    decide on appropriate default value/default query to make. */
@@ -114,24 +111,47 @@ if (!isset($_GET['page'])) {
 // Base sql query for browsing auction items
 $sql = "SELECT *
         FROM Auctions
-        INNER JOIN Items USING itemID
-        INNER JOIN Bids USING auctionID
+        INNER JOIN Items USING (itemID)
         WHERE 1=1";
 
 // Adding conditions based on keyword and category search
-if ($keyword != null) {
+if ($keyword !== null and $keyword !== '') {
   $keyword = htmlspecialchars($keyword); // Sanitize input to prevent XSS
   $sql .= " AND itemName LIKE '%$keyword%'";
 }
 
-if ($category != null) {
+if ($category !== null and $category !== 'all') {
   $category = htmlspecialchars($category);
-  $sql .= " AND category = '$category'";
+  $sql .= " AND Items.category = '$category'";
 }
 
-if ($ordering == "Price (low to high)") {
-  $sql .= " ORDER BY bidAmount ASC";
+if ($ordering == "pricelow") {
+  $sql .= " ORDER BY startPriceGBP ASC";
+} else if ($ordering == "pricehigh") {
+  $sql .= " ORDER BY startPriceGBP DESC";
+} else {
+  $sql .= " ORDER BY auctionDate ASC";
 }
+
+$result = $conn->query($sql);
+if ($result === false) {
+  // Output error message
+  echo "Error in query: " . $conn->error;
+} else {
+  // Check if there are any results
+  if ($result->num_rows > 0) {
+    // Output data for each row
+    while ($row = $result->fetch_assoc()) {
+      echo "Auction ID: " . $row['category'] . "<br>";
+      echo "Item Name: " . $row['itemName'] . "<br>";
+      echo "Current Price: $" . $row['startPriceGBP'] . "<br>";
+      echo "Auction Date: " . $row['auctionDate'] . "<br><br>";
+    }
+  } else {
+    echo "No results found.";
+  }
+}
+$conn->close();
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */

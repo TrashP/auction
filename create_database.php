@@ -41,7 +41,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Items
         itemID INT AUTO_INCREMENT PRIMARY KEY,
         itemName VARCHAR(255) NOT NULL,
         itemDescription VARCHAR(255),
-        category ENUM('Art & Collectibles', 'Electronics & Gadgets', 'Fashion & Accessories', 'Home & Garden', 'Automotive & Vehicles', 'Sports & Outdoors', 'Real Estate & Property', 'Books, Movies & Music', 'Toys & Games', 'Business & Industrial Equipment', 'Health & Beauty', 'Hobbies & Crafts', 'Pet Supplies', 'Industrial & Scientific', 'Charity & Fundraising') NOT NULL
+        category ENUM('Art and Collectibles', 'Electronics and Gadgets', 'Fashion and Accessories', 'Home and Garden', 'Automotive and Vehicles', 'Sports and Outdoors', 'Real Estate and Property', 'Books, Movies and Music', 'Toys and Games', 'Business and Industrial Equipment', 'Health and Beauty', 'Hobbies and Crafts', 'Pet Supplies', 'Industrial and Scientific', 'Charity and Fundraising') NOT NULL
         )";
 
 if ($mysqli->query($sql) === TRUE) {
@@ -103,15 +103,15 @@ if ($mysqli->query($sql) === TRUE) {
 
 // Add sample data to database
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion & Accessories');";
+        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies & Music');";
+        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art & Collectibles');";
+        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
