@@ -1,13 +1,14 @@
 <?php include_once("header.php")?>
 
 <?php
-/* (Uncomment this block to redirect people without selling privileges away from this page)
+//(Uncomment this block to redirect people without selling privileges away from this page)
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
+
   if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
     header('Location: browse.php');
   }
-*/
+
 ?>
 
 <div class="container">
@@ -25,44 +26,65 @@
       extremely low-priority / only done after all database functions are
       complete. -->
       <form method="post" action="create_auction_result.php">
+
+      <!--------------------- Auction Title ------------------------->
+
         <div class="form-group row">
-          <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
+          <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of Auction</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="auctionTitle" placeholder="e.g. Black mountain bike">
+            <input type="text" class="form-control" id="auctionTitle" name="auctionTitle" placeholder="e.g. Black mountain bike" >
             <small id="titleHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> A short description of the item you're selling, which will display in listings.</small>
           </div>
         </div>
+
+      <!--------------------- Auction Details ------------------------->
+
         <div class="form-group row">
           <label for="auctionDetails" class="col-sm-2 col-form-label text-right">Details</label>
           <div class="col-sm-10">
-            <textarea class="form-control" id="auctionDetails" rows="4"></textarea>
+            <textarea class="form-control" id="auctionDetails" id="auctionDetails" rows="4"></textarea>
             <small id="detailsHelp" class="form-text text-muted">Full details of the listing to help bidders decide if it's what they're looking for.</small>
           </div>
         </div>
+
+      <!--------------------- Auction Category ------------------------->
+
         <div class="form-group row">
           <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
           <div class="col-sm-10">
-            <select class="form-control" id="auctionCategory">
+            <select class="form-control" id="auctionCategory" name="auctionCategory">
               <option selected>Choose...</option>
-              <option value="fill">Fill me in</option>
-              <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+              <option value="Art">Art and Collectibles</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Entertainment">Books, Movies and Music</option>
+              <option value="Fashion">Fashion and Accessories</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Health">Health and Beauty</option>
+              <option value="Kitchenware">Kitchenware</option>
+              <option value="Toys">Toys</option>
+              <option value="Others">Others</option>
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
           </div>
         </div>
+
+      <!--------------------- Auction Start Price ------------------------->
+
         <div class="form-group row">
-          <label for="auctionStartPrice" class="col-sm-2 col-form-label text-right">Starting price</label>
+          <label for="auctionStartPrice" class="col-sm-2 col-form-label text-right">Starting Price</label>
           <div class="col-sm-10">
 	        <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">£</span>
               </div>
-              <input type="number" class="form-control" id="auctionStartPrice">
+              <input type="number" class="form-control" id="auctionStartPrice" name="auctionStartPrice">
             </div>
             <small id="startBidHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Initial bid amount.</small>
           </div>
         </div>
+      
+      <!--------------------- Auction Reserve Price ------------------------->
+
         <div class="form-group row">
           <label for="auctionReservePrice" class="col-sm-2 col-form-label text-right">Reserve price</label>
           <div class="col-sm-10">
@@ -70,15 +92,18 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">£</span>
               </div>
-              <input type="number" class="form-control" id="auctionReservePrice">
+              <input type="number" class="form-control" id="auctionReservePrice" name="auctionReservePrice">
             </div>
             <small id="reservePriceHelp" class="form-text text-muted">Optional. Auctions that end below this price will not go through. This value is not displayed in the auction listing.</small>
           </div>
         </div>
+
+      <!--------------------- Auction End Date ------------------------->
+
         <div class="form-group row">
           <label for="auctionEndDate" class="col-sm-2 col-form-label text-right">End date</label>
           <div class="col-sm-10">
-            <input type="datetime-local" class="form-control" id="auctionEndDate">
+            <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate">
             <small id="endDateHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Day for the auction to end.</small>
           </div>
         </div>
