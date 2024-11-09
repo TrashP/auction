@@ -21,7 +21,7 @@
                 $title = $_POST['auctionTitle'] ?? '';
                 $details = $_POST['auctionDetails'] ?? '';
                 $category = $_POST['auctionCategory'] ?? '';
-                $startPrice = (float)($_POST['auctionStartPrice'] ?? -1.00);
+                $startPrice = $_POST['auctionStartPrice'] ?? -1;
                 $reservePrice = $_POST['auctionReservePrice'] ?? null;
                 $auctionEndDate = $_POST['auctionEndDate'] ?? null;
             }
@@ -59,6 +59,7 @@
                 $errors[] = "End date must be today onwards.";
             }
 
+            //Displays all possible errors with the fields
             if (!empty($errors)) {
                 // Display errors
                 echo '<div class="alert alert-danger"><ul>';
