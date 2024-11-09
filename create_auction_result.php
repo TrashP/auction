@@ -28,10 +28,6 @@
 
             $errors = [];
 
-            echo $startPrice;
-            echo $category;
-            echo $title;
-
             /*----------Blank value errors----------*/
             //Checks if all required fields are blank
             if (empty($title)) {
