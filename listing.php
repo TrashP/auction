@@ -2,14 +2,31 @@
 <?php require("utilities.php")?>
 
 <?php
+
+  require 'db_connection.php';
+  if (session_status() === PHP_SESSION_NONE) {
+      session_start(); // Start the session only if it hasn't been started already
+  }
+
   // Get info from the URL:
-  $item_id = $_GET['item_id'];
+  $itemID = $_GET['itemID'];
+
+  echo $itemID;
 
   // TODO: Use item_id to make a query to the database.
+  $itemsQuery = "SELECT itemName, itemDescription FROM items WHERE itemID = '$itemID'";
+  $itemsResult = $conn->query($itemsQuery);
+  $item = $itemsResult->fetch_assoc();
+
+  if ($itemsResult->num_rows === 0) {
+    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Item does not exist </div>';
+    mysqli_close($conn);
+    exit();
+  }
 
   // DELETEME: For now, using placeholder data.
-  $title = "Placeholder title";
-  $description = "Description blah blah blah";
+  $title = $item['itemName'];
+  $description = $item['itemDescription'];
   $current_price = 30.50;
   $num_bids = 1;
   $end_time = new DateTime('2020-11-02T00:00:00');
