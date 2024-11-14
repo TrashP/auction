@@ -5,7 +5,7 @@
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
 
-  if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
+  if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Seller') {
     header('Location: browse.php');
   }
 
