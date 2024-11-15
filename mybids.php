@@ -36,8 +36,8 @@
 <?php
 
 echo "<h2>$userID</h2>";
-// $bidsQuery = "SELECT * FROM Bids WHERE userID = 4";
-$bidsQuery = "SELECT * FROM Bids WHERE userID = $userID";
+$bidsQuery = "SELECT * FROM Bids WHERE userID = 4";
+// $bidsQuery = "SELECT * FROM Bids WHERE userID = $userID";
 $bidResult =  $conn->query($bidsQuery);
 $bids = $bidResult->fetch_assoc();
 
@@ -55,11 +55,11 @@ $bids = $bidResult->fetch_assoc();
 
     <table class="table">
       <thead>
-        <th scope="col">User ID</th>
+        <th scope="col">Bid ID</th>
         <th scope="col">Auction ID</th>
         <th scope="col">Item</th>
-        <th scope="col">Current Highest Bid (£)</th>
         <th scope="col">My Bid Amount(£)</th>
+        <th scope="col">Current Highest Bid (£)</th>
         <th scope="col">Time Till End</th>
       </thead>
       <tbody>
@@ -67,8 +67,9 @@ $bids = $bidResult->fetch_assoc();
           if ($bidResult->num_rows > 0) {
               while ($bid = $bidResult->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . htmlspecialchars($bid['userID']) . "</td>";
+                echo "<td>" . htmlspecialchars($bid['bidID']) . "</td>";
                 echo "<td>" . htmlspecialchars($bid['auctionID']) . "</td>";
+                echo "<td> ITEM PLACEHOLDER </td>";
                 echo "<td>" . htmlspecialchars($bid['bidAmountGBP']) . "</td>";
                 echo "</tr>";
               }
