@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // p a query to find the user based on email
-    $stmt = $conn->prepare("SELECT userID, role, password FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT userID, role, password FROM Users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        // berify the password against the hashed password in the database
+        // verify the password against the hashed password in the database
         if (password_verify($password, $user['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $email;
