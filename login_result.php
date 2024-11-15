@@ -6,13 +6,13 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    
+
     if (empty($email) || empty($password)) {
         die("Email and password are required. <a href='browse.php'>Go back</a>");
     }
 
     // p a query to find the user based on email
-    $stmt = $conn->prepare("SELECT userID, role, firstName, password FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT userID, role, firstName, password FROM Users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -20,13 +20,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        // berify the password against the hashed password in the database
+        // verify the password against the hashed password in the database
         if (password_verify($password, $user['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $email;
             $_SESSION['userID'] = $user['userId'];
             $_SESSION['firstName'] = $user['firstName'];
             $_SESSION['account_type'] = $user['role'];
+            $_SESSION['userID'] = $user['userID'];
             echo "<div class='text-center'>You are now logged in! Redirecting...</div>";
             header("refresh:2;url=browse.php");
             exit();

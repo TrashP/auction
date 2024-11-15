@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Chat-GPT has been used to debug the code and suggest minor improvements for the code
 include_once("db_connection.php");
 
@@ -43,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
     // prep query
     $stmt = $conn->prepare("INSERT INTO Users (role, firstName, lastName, dateOfBirth, email, password) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssssss", $role, $firstName, $lastName, $dateOfBirth, $email, $hashedPassword);
@@ -54,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error: " . $stmt->error;
     }
-
     // close statement and connection
     $stmt->close();
     $conn->close();
