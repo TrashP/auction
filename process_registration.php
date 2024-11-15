@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // query database to see if email already exists
-    $emailCheckStmt = $conn->prepare("SELECT id FROM Users WHERE email = ?");
+    $emailCheckStmt = $conn->prepare("SELECT userID FROM Users WHERE email = ?");
     $emailCheckStmt->bind_param("s", $email);
     $emailCheckStmt->execute();
     $emailCheckStmt->store_result();
