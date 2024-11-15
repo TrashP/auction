@@ -120,7 +120,7 @@
             if ($auctionsResult) {
                 // If all is successful, let user know.
                 // Provide link to listing
-                $listingLink = "listing.php?itemID=$itemID";
+                $listingLink = "listing.php?itemID=$itemID&auctionID=$auctionID";
                 echo '<div class="text-center">Auction successfully created! <a href="' . $listingLink . '">View your new listing.</a></div>';
                 mysqli_close($conn);
                 exit();
