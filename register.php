@@ -3,7 +3,6 @@
 <div class="container">
 <h2 class="my-3">Register new account</h2>
 
-<!-- Create auction form -->
 <form method="POST" action="process_registration.php">
   <div class="form-group row">
     <label for="accountType" class="col-sm-2 col-form-label text-right">Registering as a:</label>
@@ -19,6 +18,35 @@
       <small id="accountTypeHelp" class="form-text-inline text-muted"><span class="text-danger">* Required.</span></small>
 	</div>
   </div>
+  
+  <!-- First Name -->
+  <div class="form-group row">
+    <label for="firstName" class="col-sm-2 col-form-label text-right">First Name</label>
+	<div class="col-sm-10">
+      <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
+      <small id="firstNameHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
+	</div>
+  </div>
+  
+  <!-- Last Name -->
+  <div class="form-group row">
+    <label for="lastName" class="col-sm-2 col-form-label text-right">Last Name</label>
+	<div class="col-sm-10">
+      <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
+      <small id="lastNameHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
+	</div>
+  </div>
+  
+  <!-- Date of Birth -->
+  <div class="form-group row">
+    <label for="dateOfBirth" class="col-sm-2 col-form-label text-right">Date of Birth</label>
+	<div class="col-sm-10">
+      <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" aria-describedby="dateOfBirthHelp">
+      <small id="dateOfBirthHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
+	</div>
+  </div>
+  
+  <!-- Email -->
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label text-right">Email</label>
 	<div class="col-sm-10">
@@ -26,6 +54,8 @@
       <small id="emailHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
 	</div>
   </div>
+  
+  <!-- Password -->
   <div class="form-group row">
     <label for="password" class="col-sm-2 col-form-label text-right">Password</label>
     <div class="col-sm-10">
@@ -33,6 +63,8 @@
       <small id="passwordHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
     </div>
   </div>
+  
+  <!-- Password Confirmation -->
   <div class="form-group row">
     <label for="passwordConfirmation" class="col-sm-2 col-form-label text-right">Repeat password</label>
     <div class="col-sm-10">
