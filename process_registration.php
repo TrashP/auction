@@ -12,21 +12,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password !== $passwordConfirmation) {
         die("Passwords do not match. <a href='register.php'>Go back</a> and try again.");
     }
-
     // hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
     // prep query
     $stmt = $conn->prepare("INSERT INTO users (role , email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $role, $email, $hashedPassword);
-
     // execute
     if ($stmt->execute()) {
         echo "Registration successful! <a href='browse.php'>Return to browse page to login</a>";
     } else {
         echo "Error: " . $stmt->error;
     }
-
     // close statement and connection
     $stmt->close();
     $conn->close();

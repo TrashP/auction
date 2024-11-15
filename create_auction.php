@@ -5,7 +5,7 @@
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
 
-  if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
+  if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Seller') {
     header('Location: browse.php');
   }
 
@@ -42,8 +42,18 @@
         <div class="form-group row">
           <label for="auctionDetails" class="col-sm-2 col-form-label text-right">Details</label>
           <div class="col-sm-10">
-            <textarea class="form-control" id="auctionDetails" id="auctionDetails" rows="4"></textarea>
+            <input type="text" textarea class="form-control" id="auctionDetails" name="auctionDetails" rows="4"></textarea>
             <small id="detailsHelp" class="form-text text-muted">Full details of the listing to help bidders decide if it's what they're looking for.</small>
+          </div>
+        </div>
+
+        <!--------------------- Auction Quantity ---------------------->
+
+            <div class="form-group row">
+          <label for="auctionQuantity" class="col-sm-2 col-form-label text-right">Quantity</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="auctionQuantity" name="auctionQuantity" placeholder="0">
+            <small id="quantityHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Quantity of the item you're selling</small>
           </div>
         </div>
 
@@ -53,15 +63,22 @@
           <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
           <div class="col-sm-10">
             <select class="form-control" id="auctionCategory" name="auctionCategory">
-              <option selected>Choose...</option>
-              <option value="Art">Art and Collectibles</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Entertainment">Books, Movies and Music</option>
-              <option value="Fashion">Fashion and Accessories</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Health">Health and Beauty</option>
-              <option value="Kitchenware">Kitchenware</option>
-              <option value="Toys">Toys</option>
+              <option selected disabled>Choose...</option>
+              <option value="Art and Collectibles">Art and Collectibles</option>
+              <option value="Automotive and Vehicles">Automotive and Vehicles</option>
+              <option value="Books, Movies and Music">Books, Movies and Music</option>
+              <option value="Business and Industrial Equipment">Business and Industrial Equipment</option>
+              <option value="Charity and Fundraising">Charity and Fundraising</option>
+              <option value="Electronics and Gadgets">Electronics and Gadgets</option>
+              <option value="Fashion and Accessories">Fashion and Accessories</option>
+              <option value="Health and Beauty">Health and Beauty</option>
+              <option value="Hobbies and Crafts">Hobbies and Crafts</option>
+              <option value="Home and Garden">Home and Garden</option>
+              <option value="Industrial and Scientific">Industrial and Scientific</option>
+              <option value="Pet Supplies">Pet Supplies</option>
+              <option value="Real Estate and Property">Real Estate and Property</option>
+              <option value="Sports and Outdoors">Sports and Outdoors</option>
+              <option value="Toys and Games">Toys and Games</option>
               <option value="Others">Others</option>
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
