@@ -118,6 +118,8 @@ $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
         VALUES (4, 1, 50000);";
 $mysqli->query($sql);
 
+
+
 $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
         VALUES (5, 2, 2000);";
 $mysqli->query($sql);
