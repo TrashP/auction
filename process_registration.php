@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Chat-GPT has been used to debug the code and suggest minor improvements for the code
 include_once("db_connection.php");
 
