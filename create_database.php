@@ -53,9 +53,10 @@ if ($mysqli->query($sql) === TRUE) {
 // Create the 'Bids' table if it does not exist
 $sql = "CREATE TABLE IF NOT EXISTS Bids
         (
-        userID INT PRIMARY KEY,
+        userID INT NOT NULL,
         auctionID INT NOT NULL,
-        bidAmountGBP INT NOT NULL
+        bidAmountGBP INT NOT NULL,
+        PRIMARY KEY (userID, auctionID)
         )";
 
 if ($mysqli->query($sql) === TRUE) {
@@ -122,8 +123,12 @@ $sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
         VALUES (5, 2, 2000);";
 $mysqli->query($sql);
 
+$sql = "INSERT INTO Bids (userID, auctionID, bidAmountGBP)
+        VALUES (5, 1, 60000);";
+$mysqli->query($sql);
+
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
-        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 4, 1);";
+        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 5, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
@@ -146,8 +151,9 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (3, 'Tom', 'Cruise', '1980-03-03', 'tomcruise@gmail.com', 'tcruise', 'Seller');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('cmartin', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
-        VALUES (4, 'Chris', 'Martin', '1985-07-11', 'chrismartin@gmail.com', 'cmartin', 'Buyer');";
+        VALUES (4, 'Chris', 'Martin', '1985-07-11', 'chrismartin@gmail.com', '$hashedPassword', 'Buyer');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)

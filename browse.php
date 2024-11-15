@@ -123,30 +123,64 @@ if (!isset($_GET['page'])) {
    decide on appropriate default value/default query to make. */
 
 // Base sql query for browsing auction items
+// $sql = "SELECT 
+//           Items.itemID, 
+//           itemName, 
+//           itemDescription, 
+//           GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
+//           (SELECT COUNT(*)
+//           FROM Bids
+//           INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
+//           WHERE a1.auctionID = Bids.auctionID) AS numBids,
+//           auctionDate
+//         FROM Auctions a1
+//         INNER JOIN Items USING (itemID)
+//         LEFT JOIN Bids USING (auctionID)
+//         WHERE 1=1";
+
 $sql = "SELECT 
-          Items.itemID, 
-          itemName, 
-          itemDescription, 
-          GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
-          (SELECT COUNT(*)
-          FROM Bids
-          INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
-          WHERE a1.auctionID = Bids.auctionID) AS numBids,
-          auctionDate
-        FROM Auctions a1
-        INNER JOIN Items USING (itemID)
-        LEFT JOIN Bids USING (auctionID)
-        WHERE 1=1";
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
 // Adding conditions based on keyword and category search
 if ($keyword !== null and $keyword !== '') {
   $keyword = htmlspecialchars($keyword); // Sanitize input to prevent XSS
-  $sql .= " AND itemName LIKE '%$keyword%'";
+  $sql = "SELECT 
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+WHERE itemName LIKE '%$keyword%'
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($category !== null and $category !== 'all') {
   $category = htmlspecialchars($category);
-  $sql .= " AND Items.category = '$category'";
+  $sql = "SELECT 
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+WHERE Items.category = '$category'
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($ordering == "pricelow") {
@@ -158,8 +192,6 @@ if ($ordering == "pricelow") {
 }
 
 $result = $conn->query($sql);
-
-$conn->close();
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
@@ -183,6 +215,11 @@ $max_page = ceil($num_results / $results_per_page);
      retrieved from the query -->
 
     <?php
+    if (isset($_SESSION['firstName'])) {
+      $firstName = $_SESSION['firstName'];
+      echo "<h3>Welcome, " . $firstName . "</h3>";
+    }
+
     if ($result === false) {
       // Output error message
       echo "Error in query: " . $conn->error;
@@ -190,6 +227,7 @@ $max_page = ceil($num_results / $results_per_page);
       // Output data for each row
       $skip = $results_per_page * ($curr_page - 1);
       $res = $results_per_page;
+      echo "<h5>All Items:</h5>";
       while ($row = $result->fetch_assoc()) {
         if ($skip == 0 and $res != 0) {
           print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
@@ -264,6 +302,45 @@ $max_page = ceil($num_results / $results_per_page);
     </ul>
   </nav>
 
+  <?php
+  // Implement recommendation system based on User collaborative filtering
+  if (isset($_SESSION['userID'])) {
+    $userID = $_SESSION['userID'];
+    echo "<h5>Items that people similar to you are bidding on:</h5>";
+
+    $sql = "SELECT 
+          Items.itemID, 
+          itemName, 
+          itemDescription, 
+          GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+          COUNT(Bids.userID) AS numBids,
+          auctionDate
+        FROM Auctions a1
+        INNER JOIN Items USING (itemID)
+        LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+        WHERE Bids.userID != $userID AND NOT EXISTS (
+                                        SELECT 1
+                                        FROM Bids b2
+                                        WHERE b2.userID = $userID
+                                        AND b2.auctionID = a1.auctionID
+        )
+        GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
+
+    $resultrec = $conn->query($sql);
+
+    if ($resultrec === false) {
+      // Output error message
+      echo "Error in query: " . $conn->error;
+    } else {
+      // Output data for each row
+      while ($row = $resultrec->fetch_assoc()) {
+        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+      }
+    }
+  }
+  $conn->close();
+
+  ?>
 
 </div>
 
