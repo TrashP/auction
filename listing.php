@@ -10,6 +10,7 @@
 
   // Get info from the URL:
   $itemID = $_GET['itemID'];
+  $auctionID = $_GET['auctionID'];
 
   echo $itemID;
 
@@ -24,12 +25,32 @@
     exit();
   }
 
+  $bidsQuery = "SELECT MAX(bidAmountGBP) AS currentPrice, COUNT(bidAmountGBP) AS numBids FROM Bids WHERE auctionID = '$auctionID'";
+  $bidsResult = $conn->query($bidsQuery);
+  $bids = $bidsResult->fetch_assoc();
+
+  if ($bids->num_rows === 0) {
+    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
+    mysqli_close($conn);
+    exit();
+  }
+
+  $auctionQuery = "SELECT auctionDate FROM auctions WHERE auctionID = '$auctionID'";
+  $auctionResult = $conn->query($auctionQuery);
+  $auction = $auctionResult->fetch_assoc();
+
+  if ($auction->num_rows === 0) {
+    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Auction does not exist </div>';
+    mysqli_close($conn);
+    exit();
+  }
+
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
-  $current_price = 30.50;
-  $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
+  $current_price = $bids['bidAmountGBP'];
+  $num_bids = $bids['bidAmountGBP'];
+  $end_time = $auction['auctionDate'];
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
