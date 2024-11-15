@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // p a query to find the user based on email
-    $stmt = $conn->prepare("SELECT userID, role, password FROM Users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT userID, role, firstName, password FROM Users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -24,10 +24,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $email;
+            $_SESSION['userID'] = $user['userId'];
+            $_SESSION['firstName'] = $user['firstName'];
             $_SESSION['account_type'] = $user['role'];
             $_SESSION['userID'] = $user['userID'];
             echo "<div class='text-center'>You are now logged in! Redirecting...</div>";
-            header("refresh:5;url=index.php");
+            header("refresh:2;url=browse.php");
             exit();
         } else {
             echo "Invalid password. <a href='browse.php'>Go back</a>";

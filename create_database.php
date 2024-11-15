@@ -87,9 +87,9 @@ if ($mysqli->query($sql) === TRUE) {
 $sql = "CREATE TABLE IF NOT EXISTS Users
         (
         userID INT AUTO_INCREMENT PRIMARY KEY,
-        firstName VARCHAR(255) DEFAULT 'John',
-        lastName VARCHAR(255) DEFAULT 'Smith',
-        dateOfBirth DATE DEFAULT '2000-01-01',
+        firstName VARCHAR(255) NOT NULL,
+        lastName VARCHAR(255) NOT NULL,
+        dateOfBirth DATE NOT NULL,
         email VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
         role ENUM('Buyer', 'Seller')
