@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $email;
-            $_SESSION['userID'] = $user['userId'];
+            $_SESSION['userID'] = $user['userID'];
             $_SESSION['firstName'] = $user['firstName'];
             $_SESSION['account_type'] = $user['role'];
             $_SESSION['userID'] = $user['userID'];
