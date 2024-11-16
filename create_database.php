@@ -53,11 +53,10 @@ if ($mysqli->query($sql) === TRUE) {
 // Create the 'Bids' table if it does not exist
 $sql = "CREATE TABLE IF NOT EXISTS Bids
         (
-        bidID INT PRIMARY KEY,
+        bidID INT AUTO_INCREMENT PRIMARY KEY,
         userID INT NOT NULL,
         auctionID INT NOT NULL,
-        bidAmountGBP INT NOT NULL,
-        PRIMARY KEY (userID, auctionID)
+        bidAmountGBP INT NOT NULL
         )";
 
 if ($mysqli->query($sql) === TRUE) {
@@ -116,12 +115,12 @@ $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
         VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
-        VALUES (1, 4, 1, 50000);";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
+        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
-        VALUES (2, 4, 2, 8473892);";
+        VALUES (1, 4, 1, 50000);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
@@ -146,6 +145,10 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
         VALUES (3, 3, 3, '2024-11-02', 500, 2000, 2);";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES (4, 3, 4, '2024-07-02', 2000, 10000, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)

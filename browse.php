@@ -144,6 +144,7 @@ $sql = "SELECT
     itemDescription, 
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
     auctionDate
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
@@ -160,6 +161,7 @@ if ($keyword !== null and $keyword !== '') {
     itemDescription, 
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
     auctionDate
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
@@ -176,6 +178,7 @@ if ($category !== null and $category !== 'all') {
     itemDescription, 
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
     auctionDate
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
@@ -218,7 +221,7 @@ $max_page = ceil($num_results / $results_per_page);
     <?php
     if (isset($_SESSION['firstName'])) {
       $firstName = $_SESSION['firstName'];
-      echo "<h3>Welcome, " . $firstName . "</h3>";
+      echo "<h3>Hi, " . $firstName . "</h3>";
     }
 
     if ($result === false) {
@@ -228,7 +231,7 @@ $max_page = ceil($num_results / $results_per_page);
       // Output data for each row
       $skip = $results_per_page * ($curr_page - 1);
       $res = $results_per_page;
-      echo "<h5>All Items:</h5>";
+      echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
         if ($skip == 0 and $res != 0) {
 
@@ -300,51 +303,11 @@ $max_page = ceil($num_results / $results_per_page);
       </a>
     </li>');
       }
+      $conn->close();
       ?>
 
     </ul>
   </nav>
-
-  <?php
-  // Implement recommendation system based on User collaborative filtering
-  if (isset($_SESSION['userID'])) {
-    $userID = $_SESSION['userID'];
-    echo "<h5>Items that people similar to you are bidding on:</h5>";
-
-    $sql = "SELECT 
-          Items.itemID, 
-          itemName, 
-          itemDescription, 
-          GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
-          COUNT(Bids.userID) AS numBids,
-          auctionDate
-        FROM Auctions a1
-        INNER JOIN Items USING (itemID)
-        LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
-        WHERE Bids.userID != $userID AND NOT EXISTS (
-                                        SELECT 1
-                                        FROM Bids b2
-                                        WHERE b2.userID = $userID
-                                        AND b2.auctionID = a1.auctionID
-        )
-        GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
-
-    $resultrec = $conn->query($sql);
-
-    if ($resultrec === false) {
-      // Output error message
-      echo "Error in query: " . $conn->error;
-    } else {
-      // Output data for each row
-      while ($row = $resultrec->fetch_assoc()) {
-        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
-      }
-    }
-  }
-  $conn->close();
-
-  ?>
-
 </div>
 
 
