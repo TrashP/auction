@@ -132,6 +132,7 @@ $sql = "SELECT
           FROM Bids
           INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
           WHERE a1.auctionID = Bids.auctionID) AS numBids,
+          a1.auctionID,
           auctionDate
         FROM Auctions a1
         INNER JOIN Items USING (itemID)
@@ -192,7 +193,9 @@ $max_page = ceil($num_results / $results_per_page);
       $res = $results_per_page;
       while ($row = $result->fetch_assoc()) {
         if ($skip == 0 and $res != 0) {
-          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+
+
+          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID']);
           $res -= 1;
         } else {
           $skip -= 1;
