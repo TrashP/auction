@@ -13,6 +13,7 @@
   $auctionID = $_GET['auctionID'];
 
   echo $itemID;
+  echo $auctionID;
 
   // TODO: Use item_id to make a query to the database.
   $itemsQuery = "SELECT itemName, itemDescription FROM items WHERE itemID = '$itemID'";
