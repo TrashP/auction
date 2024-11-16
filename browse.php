@@ -150,6 +150,7 @@ INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
+
 // Adding conditions based on keyword and category search
 if ($keyword !== null and $keyword !== '') {
   $keyword = htmlspecialchars($keyword); // Sanitize input to prevent XSS
@@ -230,7 +231,9 @@ $max_page = ceil($num_results / $results_per_page);
       echo "<h5>All Items:</h5>";
       while ($row = $result->fetch_assoc()) {
         if ($skip == 0 and $res != 0) {
-          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate']);
+
+
+          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID']);
           $res -= 1;
         } else {
           $skip -= 1;

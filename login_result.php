@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("refresh:2;url=browse.php");
             exit();
         } else {
+
             echo "Invalid password. <a href='browse.php'>Go back</a>";
         }
     } else {
