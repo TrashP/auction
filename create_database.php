@@ -71,7 +71,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Auctions
         auctionID INT AUTO_INCREMENT PRIMARY KEY,
         userID INT NOT NULL,
         itemID INT NOT NULL,
-        auctionDate DATE NOT NULL,
+        auctionDate DATETIME NOT NULL,
         startPriceGBP INT NOT NULL,
         reservePriceGBP INT NOT NULL,
         highestBidderID INT,
@@ -134,15 +134,15 @@ $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
-        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 4, 1);";
+        VALUES (1, 1, 1, '2024-10-30 14:30:00', 40000, 80000, 4, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
-        VALUES (2, 2, 2, '2024-11-01', 1000, 10000, 5, 1);";
+        VALUES (2, 2, 2, '2024-11-01 09:15:00', 1000, 10000, 5, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (3, 3, 3, '2024-11-02', 500, 2000, 2);";
+        VALUES (3, 3, 3, '2024-11-02 18:45:00', 500, 2000, 2);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
