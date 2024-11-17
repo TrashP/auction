@@ -53,7 +53,7 @@ if ($mysqli->query($sql) === TRUE) {
 // Create the 'Bids' table if it does not exist
 $sql = "CREATE TABLE IF NOT EXISTS Bids
         (
-        bidID INT PRIMARY KEY,
+        bidID INT AUTO_INCREMENT PRIMARY KEY,
         userID INT NOT NULL,
         auctionID INT NOT NULL,
         bidAmountGBP INT NOT NULL
@@ -115,26 +115,28 @@ $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
         VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
-        VALUES (1, 4, 1, 50000);";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
+        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
-        VALUES (2, 4, 2, 8473892);";
+        VALUES (1, 4, 1, 50000);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
         VALUES (3, 4, 3, 398349);";
 $mysqli->query($sql);
 
-
-
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
         VALUES (4, 5, 2, 2000);";
 $mysqli->query($sql);
 
+$sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
+        VALUES (5, 5, 1, 60000);";
+$mysqli->query($sql);
+
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
-        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 4, 1);";
+        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 5, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
@@ -143,6 +145,10 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
         VALUES (3, 3, 3, '2024-11-02', 500, 2000, 2);";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES (4, 3, 4, '2024-07-02', 2000, 10000, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
@@ -157,8 +163,9 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (3, 'Tom', 'Cruise', '1980-03-03', 'tomcruise@gmail.com', 'tcruise', 'Seller');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('cmartin', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
-        VALUES (4, 'Chris', 'Martin', '1985-07-11', 'chrismartin@gmail.com', 'cmartin', 'Buyer');";
+        VALUES (4, 'Chris', 'Martin', '1985-07-11', 'chrismartin@gmail.com', '$hashedPassword', 'Buyer');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
