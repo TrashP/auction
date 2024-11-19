@@ -188,9 +188,9 @@ GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($ordering == "pricelow") {
-  $sql .= " ORDER BY startPriceGBP ASC";
+  $sql .= " ORDER BY currentPrice ASC";
 } else if ($ordering == "pricehigh") {
-  $sql .= " ORDER BY startPriceGBP DESC";
+  $sql .= " ORDER BY currentPrice DESC";
 } else {
   $sql .= " ORDER BY auctionDate ASC";
 }

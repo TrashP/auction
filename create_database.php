@@ -128,7 +128,7 @@ $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
-        VALUES (4, 5, 2, 2000);";
+        VALUES (4, 5, 2, 3000);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
