@@ -51,7 +51,7 @@
   $description = $item['itemDescription'];
   $current_price = $bids['bidAmountGBP'];
   $num_bids = $bids['bidAmountGBP'];
-  $end_time = $auction['auctionDate'];
+  $end_time = new DateTime($auction['auctionDate']);
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
@@ -85,6 +85,8 @@
      just as easily use PHP as in other places in the code */
   if ($now < $end_time):
 ?>
+
+
     <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
     </div>
@@ -108,11 +110,12 @@
   <div class="col-sm-4"> <!-- Right col with bidding info -->
 
     <p>
-<?php if ($now > $end_time): ?>
+<?php if ($now < $end_time): ?>
      This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
-     Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+  <p>Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+   <?php echo "DEBUG: Rest of the content should render."; ?>
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
 
     <!-- Bidding form -->

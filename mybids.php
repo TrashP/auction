@@ -36,8 +36,10 @@
 <?php
 
 echo "<h2>$userID</h2>";
-$bidsQuery = "SELECT * FROM Bids WHERE userID = 4";
-// $bidsQuery = "SELECT * FROM Bids WHERE userID = $userID";
+
+
+// $bidsQuery = "SELECT * FROM Bids WHERE userID = 4";
+$bidsQuery = "SELECT * FROM Bids WHERE userID = $userID";
 $bidResult =  $conn->query($bidsQuery);
 $bids = $bidResult->fetch_assoc();
 
