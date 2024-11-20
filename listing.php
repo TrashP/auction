@@ -30,28 +30,36 @@ $bidsQuery = "SELECT MAX(bidAmountGBP) AS currentPrice, COUNT(bidAmountGBP) AS n
 $bidsResult = $conn->query($bidsQuery);
 $bids = $bidsResult->fetch_assoc();
 
+<<<<<<< HEAD
 if ($bids->num_rows === 0) {
   echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
   mysqli_close($conn);
   exit();
 }
+=======
+  if ($bidsResult->num_rows === 0) {
+    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
+    mysqli_close($conn);
+    exit();
+  }
+>>>>>>> 37cb6032fd9d7b75f5f3f548b4ca557f7bf3db5f
 
 $auctionQuery = "SELECT auctionDate FROM auctions WHERE auctionID = '$auctionID'";
 $auctionResult = $conn->query($auctionQuery);
 $auction = $auctionResult->fetch_assoc();
 
-if ($auction->num_rows === 0) {
-  echo '<div class="alert alert-danger mt-3" role="alert"> Error: Auction does not exist </div>';
-  mysqli_close($conn);
-  exit();
-}
+  if ($auctionResult->num_rows === 0) {
+    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Auction does not exist </div>';
+    mysqli_close($conn);
+    exit();
+  }
 
-// DELETEME: For now, using placeholder data.
-$title = $item['itemName'];
-$description = $item['itemDescription'];
-$current_price = $bids['currentPrice'];
-$num_bids = $bids['c'];
-$end_time = new DateTime($auction['auctionDate']);
+  // DELETEME: For now, using placeholder data.
+  $title = $item['itemName'];
+  $description = $item['itemDescription'];
+  $current_price = $bids['currentPrice'];
+  $num_bids = $bids['numBids'];
+  $end_time = new DateTime($auction['auctionDate']);
 
 // TODO: Note: Auctions that have ended may pull a different set of data,
 //       like whether the auction ended in a sale or was cancelled due
@@ -87,10 +95,35 @@ $watching = false;
         ?>
 
 
+<<<<<<< HEAD
         <div id="watch_nowatch" <?php if ($has_session && $watching)
           echo ('style="display: none"'); ?>>
           <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to
             watchlist</button>
+=======
+    <div class="itemDescription">
+    <?php echo($description); ?>
+    </div>
+
+  </div>
+
+  <div class="col-sm-4"> <!-- Right col with bidding info -->
+
+    <p>
+<?php if ($now > $end_time): ?>
+     This auction ended on <?php echo(date_format($end_time, 'j M H:i')) ?>
+     <!-- TODO: Print the result of the auction here? -->
+<?php else: ?>
+  <p>Auction ends on <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+   <?php echo "DEBUG: Rest of the content should render."; ?>
+    <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
+
+    <!-- Bidding form -->
+    <form method="POST" action="place_bid.php">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">£</span>
+>>>>>>> 37cb6032fd9d7b75f5f3f548b4ca557f7bf3db5f
         </div>
         <div id="watch_watching" <?php if (!$has_session || !$watching)
           echo ('style="display: none"'); ?>>

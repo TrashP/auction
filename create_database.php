@@ -152,6 +152,10 @@ $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
+<<<<<<< HEAD
+=======
+        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 5, 1);";
+>>>>>>> 37cb6032fd9d7b75f5f3f548b4ca557f7bf3db5f
         VALUES (1, 1, 1, '2024-10-30 14:30:00', 40000, 80000, 4, 1);";
 $mysqli->query($sql);
 
