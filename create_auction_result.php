@@ -115,6 +115,7 @@
                     VALUES ('$userID', '$itemID', '$endDate', '$startPrice', '$reservePrice', '$quantity');";
 
             $auctionsResult = mysqli_query($conn, $auctionsQuery);
+            $auctionID = mysqli_insert_id($conn);
 
             //If it is successful, generate a listing link
             if ($auctionsResult) {

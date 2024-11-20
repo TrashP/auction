@@ -123,44 +123,79 @@ if (!isset($_GET['page'])) {
    decide on appropriate default value/default query to make. */
 
 // Base sql query for browsing auction items
+// $sql = "SELECT 
+//           Items.itemID, 
+//           itemName, 
+//           itemDescription, 
+//           GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
+//           (SELECT COUNT(*)
+//           FROM Bids
+//           INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
+//           WHERE a1.auctionID = Bids.auctionID) AS numBids,
+//           auctionDate
+//         FROM Auctions a1
+//         INNER JOIN Items USING (itemID)
+//         LEFT JOIN Bids USING (auctionID)
+//         WHERE 1=1";
+
 $sql = "SELECT 
-          Items.itemID, 
-          itemName, 
-          itemDescription, 
-          GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
-          (SELECT COUNT(*)
-          FROM Bids
-          INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
-          WHERE a1.auctionID = Bids.auctionID) AS numBids,
-          a1.auctionID,
-          auctionDate
-        FROM Auctions a1
-        INNER JOIN Items USING (itemID)
-        LEFT JOIN Bids USING (auctionID)
-        WHERE 1=1";
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
+
 
 // Adding conditions based on keyword and category search
 if ($keyword !== null and $keyword !== '') {
   $keyword = htmlspecialchars($keyword); // Sanitize input to prevent XSS
-  $sql .= " AND itemName LIKE '%$keyword%'";
+  $sql = "SELECT 
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+WHERE itemName LIKE '%$keyword%'
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($category !== null and $category !== 'all') {
   $category = htmlspecialchars($category);
-  $sql .= " AND Items.category = '$category'";
+  $sql = "SELECT 
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
+    auctionDate
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+WHERE Items.category = '$category'
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($ordering == "pricelow") {
-  $sql .= " ORDER BY startPriceGBP ASC";
+  $sql .= " ORDER BY currentPrice ASC";
 } else if ($ordering == "pricehigh") {
-  $sql .= " ORDER BY startPriceGBP DESC";
+  $sql .= " ORDER BY currentPrice DESC";
 } else {
   $sql .= " ORDER BY auctionDate ASC";
 }
 
 $result = $conn->query($sql);
-
-$conn->close();
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
@@ -184,6 +219,11 @@ $max_page = ceil($num_results / $results_per_page);
      retrieved from the query -->
 
     <?php
+    if (isset($_SESSION['firstName'])) {
+      $firstName = $_SESSION['firstName'];
+      echo "<h3>Hi, " . $firstName . "</h3>";
+    }
+
     if ($result === false) {
       // Output error message
       echo "Error in query: " . $conn->error;
@@ -191,6 +231,7 @@ $max_page = ceil($num_results / $results_per_page);
       // Output data for each row
       $skip = $results_per_page * ($curr_page - 1);
       $res = $results_per_page;
+      echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
         if ($skip == 0 and $res != 0) {
 
@@ -262,12 +303,11 @@ $max_page = ceil($num_results / $results_per_page);
       </a>
     </li>');
       }
+      $conn->close();
       ?>
 
     </ul>
   </nav>
-
-
 </div>
 
 
