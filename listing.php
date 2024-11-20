@@ -49,8 +49,9 @@
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
-  $current_price = $bids['bidAmountGBP'];
-  $num_bids = $bids['bidAmountGBP'];
+  $current_price = $bids['current_price'];
+  $num_bids = $bids['numBids'];
+  echo $num_bids;
   $end_time = new DateTime($auction['auctionDate']);
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
