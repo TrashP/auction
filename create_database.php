@@ -102,6 +102,20 @@ if ($mysqli->query($sql) === TRUE) {
         die("Error creating table: " . $mysqli->error);
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS Watchlist
+        (
+        userID INT NOT NULL,
+        auctionID INT NOT NULL,
+        watching BOOLEAN NOT NULL,
+        PRIMARY KEY (userID, auctionID)
+        )";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'Watchlist' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
 // Add sample data to database
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
         VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories');";
@@ -170,6 +184,10 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
         VALUES (5, 'Chris', 'Nolan', '1982-03-01', 'chrisnolan@gmail.com', 'cnolan', 'Buyer');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Watchlist (userID, auctionID, watching)
+        VALUES (4, 4, TRUE);";
 $mysqli->query($sql);
 
 $mysqli->close();

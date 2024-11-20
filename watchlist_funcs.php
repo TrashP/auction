@@ -1,4 +1,14 @@
- <?php
+<?php include_once("header.php") ?>
+ 
+<?php
+  if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Seller') {
+    header('Location: browse.php');
+  }
+?>
+
+<?php
+
+require 'db_connection.php';;
 
 if (!isset($_POST['functionname']) || !isset($_POST['arguments'])) {
   return;
@@ -25,3 +35,5 @@ else if ($_POST['functionname'] == "remove_from_watchlist") {
 echo $res;
 
 ?>
+
+<?php include_once("footer.php")?>
