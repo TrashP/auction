@@ -102,6 +102,22 @@ if ($mysqli->query($sql) === TRUE) {
         die("Error creating table: " . $mysqli->error);
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS Ratings
+        (
+        userID INT NOT NULL,
+        auctionID INT NOT NULL,
+        rating ENUM(1, 2, 3, 4, 5) NOT NULL,
+        comment VARCHAR(255),
+        date DATE DEFAULT CURRENT_DATE,
+        PRIMARY KEY (userID, auctionID)
+        )";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'Users' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
 // Add sample data to database
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
         VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories');";

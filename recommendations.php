@@ -21,7 +21,7 @@
   require 'db_connection.php';
 
   // Implement recommendation system based on User collaborative filtering
-  if (isset($_SESSION['userID'])) {
+  if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
     $userID = $_SESSION['userID'];
     echo "<h5>Items that people similar to you are bidding on:</h5>";
 
