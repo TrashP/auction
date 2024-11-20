@@ -30,7 +30,7 @@
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
-  if ($bids->num_rows === 0) {
+  if ($bidsResult->num_rows === 0) {
     echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
     mysqli_close($conn);
     exit();
@@ -40,7 +40,7 @@
   $auctionResult = $conn->query($auctionQuery);
   $auction = $auctionResult->fetch_assoc();
 
-  if ($auction->num_rows === 0) {
+  if ($auctionResult->num_rows === 0) {
     echo '<div class="alert alert-danger mt-3" role="alert"> Error: Auction does not exist </div>';
     mysqli_close($conn);
     exit();
@@ -49,8 +49,8 @@
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
-  $current_price = $bids['bidAmountGBP'];
-  $num_bids = $bids['bidAmountGBP'];
+  $current_price = $bids['currentPrice'];
+  $num_bids = $bids['numBids'];
   $end_time = new DateTime($auction['auctionDate']);
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
@@ -110,11 +110,11 @@
   <div class="col-sm-4"> <!-- Right col with bidding info -->
 
     <p>
-<?php if ($now < $end_time): ?>
-     This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
+<?php if ($now > $end_time): ?>
+     This auction ended on <?php echo(date_format($end_time, 'j M H:i')) ?>
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
-  <p>Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+  <p>Auction ends on <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
    <?php echo "DEBUG: Rest of the content should render."; ?>
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
 
