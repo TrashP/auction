@@ -113,7 +113,21 @@ $sql = "CREATE TABLE IF NOT EXISTS Ratings
         )";
 
 if ($mysqli->query($sql) === TRUE) {
-        echo "Table 'Users' created successfully.<br>";
+        echo "Table 'Ratings' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
+$sql = "CREATE TABLE IF NOT EXISTS Watchlist
+        (
+        userID INT NOT NULL,
+        auctionID INT NOT NULL,
+        watching BOOLEAN NOT NULL,
+        PRIMARY KEY (userID, auctionID)
+        )";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'Watchlist' created successfully.<br>";
 } else {
         die("Error creating table: " . $mysqli->error);
 }
@@ -152,10 +166,6 @@ $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
-<<<<<<< HEAD
-=======
-        VALUES (1, 1, 1, '2024-10-30', 40000, 80000, 5, 1);";
->>>>>>> 37cb6032fd9d7b75f5f3f548b4ca557f7bf3db5f
         VALUES (1, 1, 1, '2024-10-30 14:30:00', 40000, 80000, 4, 1);";
 $mysqli->query($sql);
 
@@ -190,6 +200,10 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
         VALUES (5, 'Chris', 'Nolan', '1982-03-01', 'chrisnolan@gmail.com', 'cnolan', 'Buyer');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Watchlist (userID, auctionID, watching)
+        VALUES (4, 4, TRUE);";
 $mysqli->query($sql);
 
 $mysqli->close();
