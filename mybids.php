@@ -87,15 +87,39 @@ $bids = $bidResult->fetch_assoc();
 
 </div>
 
-<h2 class="my-3">My Bought Items</h2>
-<?php
-if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
-  // SQL query to select Auctions won by this buyer
+<div class="container">
+  <h2 class="my-3">My Bought Items</h2>
+  <?php
+  if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
+    // SQL query to select Auctions won by this buyer
+    $sql = "SELECT DISTINCT
+                Items.itemID, 
+                itemName, 
+                itemDescription, 
+                MAX(Bids.bidAmountGBP) AS currentPrice, 
+                a1.auctionID
+            FROM Auctions a1
+            INNER JOIN Items USING (itemID)
+            INNER JOIN Bids ON a1.auctionID = Bids.auctionID
+            WHERE Bids.userID = $userID AND Bids.bidAmountGBP = (
+                SELECT MAX(bidAmountGBP)
+                FROM Bids b
+                WHERE b.auctionID = a1.auctionID
+              )
+            GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID";
+  }
+  $resultrec = $conn->query($sql);
 
-  // Display auction item and allow buyer to submit review and rating
-}
-
-?>
-
+  if ($resultrec === false) {
+    // Output error message
+    echo "Error in query: " . $conn->error;
+  } else {
+    // Output data for each row
+    while ($row = $resultrec->fetch_assoc()) {
+      print_listing_rating($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID']);
+    }
+  }
+  ?>
+</div>
 
 <?php include_once("footer.php") ?>
