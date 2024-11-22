@@ -41,7 +41,7 @@
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
-  if ($bids->num_rows === 0) {
+  if ($bidsResult->num_rows === 0) {
     echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
     mysqli_close($conn);
     exit();
@@ -51,7 +51,7 @@
   $auctionResult = $conn->query($auctionQuery);
   $auction = $auctionResult->fetch_assoc();
 
-  if ($auction->num_rows === 0) {
+  if ($auctionResult->num_rows === 0) {
     echo '<div class="alert alert-danger mt-3" role="alert"> Error: Auction does not exist </div>';
     mysqli_close($conn);
     exit();
@@ -64,6 +64,10 @@
   $max_user_bid = $bids['maxUserBid'];
   $num_bids = $bids['numBids'];
   $end_time = new DateTime($auction['auctionDate']);
+
+  echo 'dog ';
+  echo $max_user_bid;
+  echo 'bob';
 
 
   $errors = [];
@@ -156,28 +160,31 @@
   <div class="col-sm-4"> <!-- Right col with bidding info -->
 
     <p>
-<?php if ($now > $end_time): ?>
-     This auction ended on the <?php echo(date_format($end_time, 'j M H:i')) ?>
-     <!-- TODO: Print the result of the auction here? -->
+    <?php if ($now > $end_time): ?>
+    <p>This auction ended on the <?php echo(date_format($end_time, 'j M H:i')) ?></p>
+    <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
-  <p>Auction End Date: <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+    <p>Auction End Date: <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
 
     <p class="lead">Current Highest bid: £<?php echo(number_format($current_price, 2)) ?></p>
     
     <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
 
-    <!-- Bidding form -->
-    <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
+    <!-- Available only to buyers -->
+    <?php if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] == 'Buyer'): ?>
+        <!-- Bidding form -->
+        <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">£</span>
+                </div>
+                <input type="number" class="form-control" id="bid" name="bid">
+            </div>
+            <button style="margin-top: 10px;" type="submit" class="btn btn-primary form-control">Place bid</button>
+        </form>
+    <?php endif; ?>
+<?php endif; ?>
 
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">£</span>
-        </div>
-	    <input type="number" class="form-control" id="bid" name="bid">
-      </div>
-      <button style="margin-top: 10px; type="submit" class="btn btn-primary form-control">Place bid</button>
-    </form>
-<?php endif ?>
 
   
   </div> <!-- End of right col with bidding info -->
