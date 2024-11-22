@@ -65,6 +65,40 @@
   $num_bids = $bids['numBids'];
   $end_time = new DateTime($auction['auctionDate']);
 
+
+  $errors = [];
+
+  /*----------Blank value errors----------*/
+  //Checks if all required fields are blank
+    if (empty($userID)) {
+      $errors[] = "Something went wrong... Could not get user id.";
+    }
+    if (empty($auctionID)){
+        $errors[] = "Could not extract auction id from url.";
+    }
+    if (empty($itemID)) {
+        $errors[] = "Could not extract item id from url.";
+    }
+    if (empty($title)) {
+      $errors[] = "Something went wrong... Could not get item name";
+    }
+    if (empty($description)){
+      $errors[] = "Something went wrong... Could not get item description.";
+    }
+    if (empty($current_price)) {
+      $errors[] = "Something went wrong... Could not get current price.";
+    }
+    if (empty($max_user_bid)) {
+      $errors[] = "Something went wrong... Could not get the users highest bid.";
+    }
+    if (empty($num_bids)) {
+      $errors[] = "Something went wrong... Could not get number of bids.";
+    }
+    if (empty($end_time)) {
+      $errors[] = "Something went wrong... Could not get auction end time.";
+    }
+
+
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
   //       to lack of high-enough bids. Or maybe not.
@@ -133,7 +167,7 @@
     <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
 
     <!-- Bidding form -->
-    <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>">
+    <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
 
       <div class="input-group">
         <div class="input-group-prepend">
