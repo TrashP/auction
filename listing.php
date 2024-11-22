@@ -12,8 +12,6 @@
   $itemID = $_GET['itemID'];
   $auctionID = $_GET['auctionID'];
 
-  echo $itemID;
-  echo $auctionID;
 
   // TODO: Use item_id to make a query to the database.
   $itemsQuery = "SELECT itemName, itemDescription FROM items WHERE itemID = '$itemID'";
@@ -49,9 +47,8 @@
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
-  $current_price = $bids['current_price'];
+  $current_price = $bids['currentPrice'];
   $num_bids = $bids['numBids'];
-  echo $num_bids;
   $end_time = new DateTime($auction['auctionDate']);
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
@@ -116,7 +113,7 @@
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
   <p>Auction End Date: <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
-   <?php echo "DEBUG: Rest of the content should render."; ?>
+
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
 
     <!-- Bidding form -->
