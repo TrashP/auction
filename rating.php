@@ -40,14 +40,15 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Buyer') {
     <div style="max-width: 800px; margin: 10px auto">
         <div class="card">
             <div class="card-body">
-                <form method="post" action="rating_result.php">
+                <form method="post"
+                    action="<?php echo 'rating_result.php?userID=' . $userID . '&auctionID=' . $auctionID; ?>">
 
                     <!--------------------- Rating out of 5 ------------------------->
 
                     <div class="form-group row">
                         <label for="rating" class="col-sm-2 col-form-label text-right">Rating</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="rating" name="rating">
+                            <select required class="form-control" id="rating" name="rating">
                                 <option selected disabled>Choose...</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -62,9 +63,10 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Buyer') {
                     <!--------------------- Rating Comment ------------------------->
 
                     <div class="form-group row">
-                        <label for="auctionDetails" class="col-sm-2 col-form-label text-right">Comment</label>
+                        <label for="comment" class="col-sm-2 col-form-label text-right">Comment</label>
                         <div class="col-sm-10">
-                            <input type="text" textarea class="form-control" id="auctionDetails" name="auctionDetails"
+                            <input value="<?= isset($_POST['comment']) ? htmlspecialchars($_POST['comment']) : ''; ?>"
+                                type="text" textarea class="form-control" id="comment" name="comment"
                                 rows="4"></textarea>
                             <small id="detailsHelp" class="form-text text-muted">Comment to provide feedback to the
                                 seller and help other buyers.</small>
@@ -76,6 +78,13 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'Buyer') {
             </div>
         </div>
     </div>
+
+    <?php
+    $error = $_GET['error'] ?? 'unknown_error';
+    if ($error === "Rating is required.") {
+        echo $error;
+    }
+    ?>
 
 </div>
 

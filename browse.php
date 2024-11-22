@@ -122,22 +122,6 @@ if (!isset($_GET['page'])) {
    retrieve data from the database. (If there is no form data entered,
    decide on appropriate default value/default query to make. */
 
-// Base sql query for browsing auction items
-// $sql = "SELECT 
-//           Items.itemID, 
-//           itemName, 
-//           itemDescription, 
-//           GREATEST(startPriceGBP, IFNULL(bidAmountGBP, 0)) AS currentPrice, 
-//           (SELECT COUNT(*)
-//           FROM Bids
-//           INNER JOIN Auctions a2 ON a2.auctionID = Bids.auctionID
-//           WHERE a1.auctionID = Bids.auctionID) AS numBids,
-//           auctionDate
-//         FROM Auctions a1
-//         INNER JOIN Items USING (itemID)
-//         LEFT JOIN Bids USING (auctionID)
-//         WHERE 1=1";
-
 $sql = "SELECT 
     Items.itemID, 
     itemName, 

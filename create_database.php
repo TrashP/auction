@@ -106,7 +106,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Ratings
         (
         userID INT NOT NULL,
         auctionID INT NOT NULL,
-        rating ENUM(1, 2, 3, 4, 5) NOT NULL,
+        rating ENUM('1', '2', '3', '4', '5') NOT NULL,
         comment VARCHAR(255),
         date DATE DEFAULT CURRENT_DATE,
         PRIMARY KEY (userID, auctionID)
