@@ -11,6 +11,9 @@
   // Get info from the URL:
   $itemID = $_GET['itemID'];
   $auctionID = $_GET['auctionID'];
+  $userID = $_SESSION['userID'];
+
+
 
 
   // TODO: Use item_id to make a query to the database.
@@ -24,7 +27,17 @@
     exit();
   }
 
-  $bidsQuery = "SELECT MAX(bidAmountGBP) AS currentPrice, COUNT(bidAmountGBP) AS numBids FROM Bids WHERE auctionID = '$auctionID'";
+  // $bidsQuery = "SELECT MAX(bidAmountGBP) AS currentPrice, COUNT(bidAmountGBP) AS numBids FROM Bids WHERE auctionID = '$auctionID'";
+  $bidsQuery = "SELECT 
+      MAX(bidAmountGBP) AS currentPrice, 
+      COUNT(bidAmountGBP) AS numBids,
+      (SELECT MAX(bidAmountGBP)
+       FROM Bids
+       WHERE auctionID = $auctionID AND userID = $userID) AS maxUserBid
+  FROM Bids
+  WHERE auctionID = '$auctionID';";
+  
+
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
@@ -48,6 +61,7 @@
   $title = $item['itemName'];
   $description = $item['itemDescription'];
   $current_price = $bids['currentPrice'];
+  $max_user_bid = $bids['maxUserBid'];
   $num_bids = $bids['numBids'];
   $end_time = new DateTime($auction['auctionDate']);
 
@@ -114,7 +128,9 @@
 <?php else: ?>
   <p>Auction End Date: <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
 
-    <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
+    <p class="lead">Current Highest bid: £<?php echo(number_format($current_price, 2)) ?></p>
+    
+    <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
 
     <!-- Bidding form -->
     <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>">
