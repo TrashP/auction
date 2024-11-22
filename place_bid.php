@@ -4,9 +4,6 @@
 <div class="container my-5">
 
 <?php
-    ini_set('display_errors', 1);
-    error_reporting(E_ALL);
-
 
 // This function takes the form data and adds the new bid to the database.
 
@@ -33,7 +30,6 @@
 
             }
 
-            $userID = $_SESSION['userID'] ?? -1;
  
 
             $errors = [];
@@ -105,19 +101,14 @@
 
                 echo "<h2>Bid Details Submitted</h2>";
                 echo "<p><strong>Bid Amount:</strong> " . htmlspecialchars($bidAmountGBP) . "</p>";
-                //give choices to to go to my bids or back to the listing
-                
-                // $listingLink = "listing.php?itemID=$itemID&auctionID=$auctionID";
-                // echo '<div class="text-center">Auction successfully created! <a href="' . $listingLink . '">View your new listing.</a></div>';
-                // mysqli_close($conn);
-                // exit();
+                $listingLink = "listing.php?itemID=$itemID&auctionID=$auctionID";
+                echo '<div class="text-center"><a href="' . $listingLink .'">Go back to the listing.</a></div>';
+
+
             }
 
             
-            // // bid was placed succesfully -> refresh page
-            // header("Location: " . $_SERVER['PHP_SELF'] . "?success=true");
-            // echo "Bid was place successfully";
-            // exit();
+  
 
         
 ?>
