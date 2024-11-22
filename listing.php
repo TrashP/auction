@@ -65,11 +65,6 @@
   $num_bids = $bids['numBids'];
   $end_time = new DateTime($auction['auctionDate']);
 
-  echo 'dog ';
-  echo $max_user_bid;
-  echo 'bob';
-
-
   $errors = [];
 
   /*----------Blank value errors----------*/
@@ -132,8 +127,12 @@
   <div class="col-sm-4 align-self-center"> <!-- Right col -->
 <?php
   /* The following watchlist functionality uses JavaScript, but could
-     just as easily use PHP as in other places in the code */
-  if ($now < $end_time):
+     just as easily use PHP as in other places in the code.
+     Added conditional to check if the watchlist button should be displayed
+     to sellers/buyers (show to buyers/ don't show to sellers)
+     */
+
+  if ($now < $end_time && $_SESSION['account_type'] == 'Buyer'):
 ?>
 
 
