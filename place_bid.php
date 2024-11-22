@@ -22,11 +22,12 @@
             
             // print_r($_GET);
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $userID = $_SESSION['userID'] ?? -1;
-                $auctionID = (int) $_GET['auctionID'] ?? -1;
-                $itemID = (int) $_GET['itemID'] ?? -1;
-                $bidAmountGBP = (int) $_POST['bid'] ?? -1;
+                $userID = $_SESSION['userID'] ?? 0;
+                $auctionID = $_GET['auctionID'] ?? 0;
+                $itemID = $_GET['itemID'] ?? 0;
+                $bidAmountGBP = $_POST['bid'] ?? 0;
                 $accountType = $_SESSION["account_type"] ?? "";
+                $maxUserBid = $_GET["maxUserBid"] ?? 0;
 
             }
 
@@ -52,6 +53,10 @@
                 $errors[] = "Something went wrong... Could not get account type.";
             }
 
+            if (empty($maxUserBid)) {
+                $errors[] = "Could not extract max user bid from url.";;
+            }
+
             /*----------Logical Errors----------*/
             //Checks if start price is negative
             if ($bidAmountGBP < 0) {
@@ -59,9 +64,14 @@
                 $errors[] = "Starting price must be a positive number.";
             }
 
+            if ($maxUserBid >= $bidAmountGBP) {
+                $errors[] = "You must bid higher than your previous bid.";
+            }
+
             if ($accountType == "Seller") {
               $errors[] = "Sellers cannot place a bid.";
             }
+
 
 
 
@@ -72,19 +82,20 @@
                 foreach ($errors as $error) {
                     echo "<li>$error</li>";
                 }
+                $listingLink = "listing.php?itemID=$itemID&auctionID=$auctionID";
+                echo '<div class="text-center"><a href="' . $listingLink .'">Go back to the listing.</a></div>';
                 mysqli_close($conn);
                 exit();
             }
 
-/* TODO #3: If everything looks good, make the appropriate call to insert
+
+
+
+
+
+
+/* TODO #4: If everything looks good, make the appropriate call to insert
             data into the database. */
-            // //insert into Bids table
-        
-
-            //Print out the stuff to be submitted to the DB
-
-
-
             //make query
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
@@ -92,7 +103,7 @@
 
             
             
-/* TODO #4: Bid was placed, deal with outcomes  */
+/* TODO #5: Bid was placed, deal with outcomes  */
             if (!$placeBidResult) {
                 echo '<div class="alert alert-danger mt-3" role="alert"> Error: adding data into Bids table </div>';
                 mysqli_close($conn);
