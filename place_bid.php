@@ -47,7 +47,7 @@
                 $errors[] = "Could not extract item id from url.";
             }
             if (empty($bidAmountGBP)) {
-                $errors[] = "Please enter a bid.";
+                $errors[] = "Please enter a bid greater than £0.";
             }
             if (empty($accountType)) {
                 $errors[] = "Something went wrong... Could not get account type.";
