@@ -13,9 +13,6 @@
   $auctionID = $_GET['auctionID'];
   $userID = $_SESSION['userID'];
 
-
-
-
   // TODO: Use item_id to make a query to the database.
   $itemsQuery = "SELECT itemName, itemDescription FROM items WHERE itemID = '$itemID'";
   $itemsResult = $conn->query($itemsQuery);
@@ -29,23 +26,18 @@
 
   // $bidsQuery = "SELECT MAX(bidAmountGBP) AS currentPrice, COUNT(bidAmountGBP) AS numBids FROM Bids WHERE auctionID = '$auctionID'";
   $bidsQuery = "SELECT 
-      MAX(bidAmountGBP) AS currentPrice, 
-      COUNT(bidAmountGBP) AS numBids,
-      (SELECT MAX(bidAmountGBP)
-       FROM Bids
-       WHERE auctionID = $auctionID AND userID = $userID) AS maxUserBid
+  COALESCE(MAX(bidAmountGBP), 0) AS currentPrice, 
+  COUNT(bidAmountGBP) AS numBids,
+  COALESCE((SELECT MAX(bidAmountGBP) 
+            FROM Bids 
+            WHERE auctionID = $auctionID AND userID = $userID), 0) AS maxUserBid
   FROM Bids
   WHERE auctionID = '$auctionID';";
-  
 
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
-  if ($bidsResult->num_rows === 0) {
-    echo '<div class="alert alert-danger mt-3" role="alert"> Error: Bid does not exist </div>';
-    mysqli_close($conn);
-    exit();
-  }
+  print_r($bids);
 
   $auctionQuery = "SELECT auctionDate FROM auctions WHERE auctionID = '$auctionID'";
   $auctionResult = $conn->query($auctionQuery);
