@@ -125,7 +125,7 @@
         </div>
 	    <input type="number" class="form-control" id="bid" name="bid">
       </div>
-      <button type="submit" class="btn btn-primary form-control">Place bid</button>
+      <button style="margin-top: 10px; type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
 <?php endif ?>
 
