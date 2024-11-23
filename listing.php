@@ -37,9 +37,7 @@
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
-  print_r($bids);
-
-  $auctionQuery = "SELECT auctionDate FROM auctions WHERE auctionID = '$auctionID'";
+  $auctionQuery = "SELECT auctionDate, startPriceGBP FROM auctions WHERE auctionID = '$auctionID'";
   $auctionResult = $conn->query($auctionQuery);
   $auction = $auctionResult->fetch_assoc();
 
@@ -52,6 +50,7 @@
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
+  $start_price = $auction['startPriceGBP'];
   $current_price = $bids['currentPrice'];
   $max_user_bid = $bids['maxUserBid'];
   $num_bids = $bids['numBids'];
@@ -159,10 +158,10 @@
 
     <p class="lead">Current Highest bid: £<?php echo(number_format($current_price, 2)) ?></p>
     
-    <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
-
     <!-- Available only to buyers -->
     <?php if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] == 'Buyer'): ?>
+        <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
+
         <!-- Bidding form -->
         <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
             <div class="input-group">
