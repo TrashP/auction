@@ -27,6 +27,7 @@
                 $startPrice = $_POST['auctionStartPrice'] ?? -1;
                 $reservePrice = $_POST['auctionReservePrice'] ?? null;
                 $endDate = $_POST['auctionEndDate'] ?? null;
+                $photo = $_FILES['uploadPhoto']['name'] ?? '';
             }
 
             $errors = [];
@@ -47,6 +48,9 @@
             }
             if (empty($endDate)) {
                 $errors[] = "Auction end date is required.";
+            }
+            if (empty($photo)) {
+                $errors[] = "Photo of item is required.";
             }
 
             /*----------Logical Errors----------*/
@@ -75,6 +79,41 @@
                 }
                 mysqli_close($conn);
                 exit();
+            }
+
+            //See if the photo is valid
+            // Refered to W3Schools PHP File Upload for guidance
+            $target_dir = "photos/";
+            $target_file = $target_dir . basename($_FILES["uploadPhoto"]["name"]);
+            $uploadOk = 1;
+            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            
+            //Verify if the photo is an actual image or a fake image
+            $isRealImage = getimagesize($_FILES["uploadPhoto"]["tmp_name"]);
+            if ($isRealImage === false) {
+                echo "File is not an image.";
+                $uploadOk = 0;
+            }
+
+            // Check file size
+            if ($_FILES["uploadPhoto"]["size"] > 500000) {
+                echo "Sorry, your file is too large.";
+                $uploadOk = 0;
+            }
+
+            // Allow certain file formats
+            $allowedFileTypes = array("jpg", "png", "jpeg");
+            if(!in_array($imageFileType, $allowedFileTypes)) {
+                echo "Sorry, only JPG, JPEG, PNG files are allowed.";
+                $uploadOk = 0;
+            }
+
+            if ($uploadOk === 0) {
+                echo '<div class="alert alert-danger mt-3" role="alert">Error: Improper file used.</div>';
+                db_disconnect($connection);
+                exit();
+            } else {
+                //ensure file is uploaded
             }
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
