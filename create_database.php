@@ -189,8 +189,9 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (2, 'Taylor', 'Swift', '1991-01-25', 'taylorswift@gmail.com', 'tswift', 'Seller');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('tcruise', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
-        VALUES (3, 'Tom', 'Cruise', '1980-03-03', 'tomcruise@gmail.com', 'tcruise', 'Seller');";
+        VALUES (3, 'Tom', 'Cruise', '1980-03-03', 'tomcruise@gmail.com', '$hashedPassword', 'Seller');";
 $mysqli->query($sql);
 
 $hashedPassword = password_hash('cmartin', PASSWORD_DEFAULT);
