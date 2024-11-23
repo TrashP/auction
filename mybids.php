@@ -147,10 +147,12 @@ if (!$bidsResult) {
                 itemName, 
                 itemDescription, 
                 MAX(Bids.bidAmountGBP) AS currentPrice, 
-                a1.auctionID
+                a1.auctionID,
+                AVG(rating) AS avgRating
             FROM Auctions a1
             INNER JOIN Items USING (itemID)
             INNER JOIN Bids ON a1.auctionID = Bids.auctionID
+            LEFT JOIN Ratings ON a1.auctionID = Ratings.auctionID
             WHERE Bids.userID = $userID AND Bids.bidAmountGBP = (
                 SELECT MAX(bidAmountGBP)
                 FROM Bids b
@@ -165,7 +167,7 @@ if (!$bidsResult) {
   } else {
     // Output data for each row
     while ($row = $resultrec->fetch_assoc()) {
-      print_listing_rating($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID']);
+      print_listing_rating($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID'], (int) $row['avgRating']);
     }
   }
 

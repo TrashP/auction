@@ -129,10 +129,12 @@ $sql = "SELECT
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
-    auctionDate
+    auctionDate,
+    AVG(rating) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+LEFT JOIN Ratings ON Ratings.auctionID = a1.auctionID
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
 
@@ -146,10 +148,12 @@ if ($keyword !== null and $keyword !== '') {
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
-    auctionDate
+    auctionDate,
+    AVG(rating) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+LEFT JOIN Ratings ON Ratings.auctionID = a1.auctionID
 WHERE itemName LIKE '%$keyword%'
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
@@ -163,10 +167,12 @@ if ($category !== null and $category !== 'all') {
     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
-    auctionDate
+    auctionDate,
+    AVG(rating) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+LEFT JOIN Ratings ON Ratings.auctionID = a1.auctionID
 WHERE Items.category = '$category'
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
@@ -220,7 +226,7 @@ $max_page = ceil($num_results / $results_per_page);
         if ($skip == 0 and $res != 0) {
 
 
-          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID']);
+          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID'], (int) $row['avgRating']);
           $res -= 1;
         } else {
           $skip -= 1;

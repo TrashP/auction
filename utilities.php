@@ -52,7 +52,7 @@ function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time,
   if ($rating == null) {
     $rating = "Seller Rating: N/A";
   } else {
-    $rating = "Seller Rating: " . bcdiv($rating, 1, 1) . "/5.0";
+    $rating = "Seller Rating: " . bcdiv($rating, 1, 1) . "/5";
   }
 
   // Print HTML
@@ -77,7 +77,7 @@ function print_listing_rating($item_id, $title, $desc, $price, $auction_id, $rat
   if ($rating == null) {
     $rating = "Seller Rating: N/A";
   } else {
-    $rating = "Seller Rating: " . bcdiv($rating, 1, 1) . "/5.0";
+    $rating = "Seller Rating: " . bcdiv($rating, 1, 1) . "/5";
   }
 
   // Print HTML
