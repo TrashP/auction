@@ -134,20 +134,20 @@ if ($mysqli->query($sql) === TRUE) {
 }
 
 // Add sample data to database
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', '/photos/rolex_submariner.jpg');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music', '/photos/gibson_les_paul_guitar.jpg');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music', 'photos/gibson_les_paul_guitar.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles', '/photos/charizard_card.jpg');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles', 'photos/charizard_card.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', '/photos/gold_chain.jpg');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', 'photos/gold_chain.jpg');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
