@@ -87,33 +87,32 @@
             $target_file = $target_dir . basename($_FILES["uploadPhoto"]["name"]);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+            $file_name = htmlspecialchars(basename($_FILES["uploadPhoto"]["name"]));
+
+            // echo 'bob ';
+            // echo $file_name;
+            // echo $target_file;
+            // echo ' dog';
             
             //Verify if the photo is an actual image or a fake image
             $isRealImage = getimagesize($_FILES["uploadPhoto"]["tmp_name"]);
             if ($isRealImage === false) {
-                echo "File is not an image.";
+                echo '<div class="alert alert-danger mt-3" role="alert"> Error: The file is not an image </div>';
                 $uploadOk = 0;
             }
 
             // Check file size
             if ($_FILES["uploadPhoto"]["size"] > 500000) {
-                echo "Sorry, your file is too large.";
+                echo '<div class="alert alert-danger mt-3" role="alert"> Error: File is too large </div>';
                 $uploadOk = 0;
             }
 
             // Allow certain file formats
             $allowedFileTypes = array("jpg", "png", "jpeg");
             if(!in_array($imageFileType, $allowedFileTypes)) {
-                echo "Sorry, only JPG, JPEG, PNG files are allowed.";
+                echo '<div class="alert alert-danger mt-3" role="alert"> Error: File in the wrong format </div>';
                 $uploadOk = 0;
-            }
-
-            if ($uploadOk === 0) {
-                echo '<div class="alert alert-danger mt-3" role="alert">Error: Improper file used.</div>';
-                db_disconnect($connection);
-                exit();
-            } else {
-                //ensure file is uploaded
             }
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
@@ -133,6 +132,19 @@
                 echo "<p><strong>Reserve Price:</strong> Not set</p>";
             }
             echo "<p><strong>Auction End Date:</strong> " . htmlspecialchars($endDate) . "</p>";
+            //Check if upload is fine
+            if ($uploadOk === 0) {
+                echo '<div class="alert alert-danger mt-3" role="alert">Error: Improper file used.</div>';
+                db_disconnect($connection);
+                exit();
+            } else {
+                //ensure file is uploaded
+                if (move_uploaded_file($_FILES['uploadPhoto']['tmp_name'], $target_file)) {
+                    echo "<p><strong>Photo:</strong> "."The file ". htmlspecialchars( basename( $_FILES["uploadPhoto"]["name"])). " has been uploaded.";
+                } else {
+                    echo '<div class="alert alert-danger mt-3" role="alert">Error: Please upload your file again.</div>';
+                  }
+            }
             
             //insert into Items table
             $itemsQuery = "INSERT INTO Items (itemName, itemDescription, category)
