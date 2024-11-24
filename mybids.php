@@ -27,44 +27,35 @@ $errors = [];
 
 /*----------Blank value errors----------*/
 //Checks if all required fields are blank
-  if (empty($userID)) {
-      $errors[] = "Something went wrong... Could not get user id.";
-  }
-
-  if (empty($accountType)) {
-    $errors[] = "Something went wrong... Could not get account type.";
-  }
-
-  /*----------Logical Errors----------*/
-  if ($accountType == "Seller") {
-    $errors[] = "Sellers do not have bids.";
-  }
-
-  if (!empty($errors)) {
-    // Display errors
-    echo '<div class="alert alert-danger"><ul>';
-    foreach ($errors as $error) {
-        echo "<li>$error</li>";
-    }
-    $browseLink = "browe.php";
-    echo '<div class="text-center"><a href="' . $browseLink .'">Go back to the browse page.</a></div>';
-    mysqli_close($conn);
-    exit();
+if (empty($userID)) {
+  $errors[] = "Something went wrong... Could not get user id.";
 }
 
+if (empty($accountType)) {
+  $errors[] = "Something went wrong... Could not get account type.";
+}
 
+/*----------Logical Errors----------*/
+if ($accountType == "Seller") {
+  $errors[] = "Sellers do not have bids.";
+}
+if (!empty($errors)) {
+  // Display errors
+  echo '<div class="alert alert-danger"><ul>';
+  foreach ($errors as $error) {
+    echo "<li>$error</li>";
+  }
+  $browseLink = "browe.php";
+  echo '<div class="text-center"><a href="' . $browseLink . '">Go back to the browse page.</a></div>';
+  mysqli_close($conn);
+  exit();
+}
 ?>
 
+<!-- // TODO: Perform a query to pull up the auctions they've bidded on. -->
 
-
-
-
-
-
-  <!-- // TODO: Perform a query to pull up the auctions they've bidded on. -->
-
-  <?php
-  $bidsQuery = $conn->prepare("
+<?php
+$bidsQuery = $conn->prepare("
       SELECT 
           Bids.*,
           Auctions.auctionDate,
@@ -80,31 +71,31 @@ $errors = [];
   ");
 
 
-  $bidsQuery->bind_param("i", $userID);
-  $bidsQuery->execute();
-  $bidsResult = $bidsQuery->get_result();
+$bidsQuery->bind_param("i", $userID);
+$bidsQuery->execute();
+$bidsResult = $bidsQuery->get_result();
 
-  if (!$bidsResult) {
-      echo '<div class="alert alert-danger mt-3" role="alert"> Error: adding data into Bids table </div>';
-      mysqli_close($conn);
-      exit();
-  }
-
-
-  ?>
-  <!-- // TODO: Loop through results and print them out as list items. -->
-  <!-- PUT HTML HERE -->
+if (!$bidsResult) {
+  echo '<div class="alert alert-danger mt-3" role="alert"> Error: adding data into Bids table </div>';
+  mysqli_close($conn);
+  exit();
+}
 
 
+?>
+<!-- // TODO: Loop through results and print them out as list items. -->
+<!-- PUT HTML HERE -->
 
 
-  <div class="container">
-    <h2 class="my-3">My bids</h2>
 
-    
 
-  <?php if ($bidsResult->num_rows >0): ?>
-    
+<div class="container">
+  <h2 class="my-3">My bids</h2>
+
+
+
+  <?php if ($bidsResult->num_rows > 0): ?>
+
     <table class="table">
       <thead>
         <tr>
@@ -116,46 +107,72 @@ $errors = [];
       </thead>
       <tbody>
         <?php
-            $currentDate = new DateTime(); 
-            while ($data = $bidsResult->fetch_assoc()) {
-              $auctionEndDate = new DateTime($data['auctionDate']);
-              $timeDiff = max(0, $auctionEndDate->getTimestamp() - $currentDate->getTimestamp());
-              echo "<tr>";
-              echo "<td><a href='listing.php?auctionID=" . $data['auctionID'] . "&itemID=" . $data['itemID'] . "'>" . htmlspecialchars($data['itemName']) . "</a></td>";
-              echo "<td>£" . htmlspecialchars($data['bidAmountGBP']) . "</td>";
-              echo "<td>£" . htmlspecialchars($data['highestBid']) . "</td>";
+        $currentDate = new DateTime();
+        while ($data = $bidsResult->fetch_assoc()) {
+          $auctionEndDate = new DateTime($data['auctionDate']);
+          $timeDiff = max(0, $auctionEndDate->getTimestamp() - $currentDate->getTimestamp());
+          echo "<tr>";
+          echo "<td><a href='listing.php?auctionID=" . $data['auctionID'] . "&itemID=" . $data['itemID'] . "'>" . htmlspecialchars($data['itemName']) . "</a></td>";
+          echo "<td>£" . htmlspecialchars($data['bidAmountGBP']) . "</td>";
+          echo "<td>£" . htmlspecialchars($data['highestBid']) . "</td>";
 
 
-                if ($remainingSeconds === 0) {
-                  // Auction has ended
-                  echo "<td>Auction has Ended</td>";
-                } else {
-                    // Pass remaining time to JavaScript for dynamic countdown
-                    echo "<td><span class='countdown' data-time='$timeDiff'></span></td>";
-                }
+          if ($remainingSeconds === 0) {
+            // Auction has ended
+            echo "<td>Auction has Ended</td>";
+          } else {
+            // Pass remaining time to JavaScript for dynamic countdown
+            echo "<td><span class='countdown' data-time='$timeDiff'></span></td>";
+          }
 
-                echo "</tr>";
-            }
-          ?>
-          </tbody>
-      </table>
-  <?php
+          echo "</tr>";
+        }
+        ?>
+      </tbody>
+    </table>
+    <?php
   else:
     echo "<tr><td>User has not placed any bids</td></tr>";
   endif;
   ?>
-  </div>
+</div>
 
+<div class="container">
   <h2 class="my-3">My Bought Items</h2>
   <?php
   if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
     // SQL query to select Auctions won by this buyer
-
-    // Display auction item and allow buyer to submit review and rating
+    $sql = "SELECT DISTINCT
+                Items.itemID, 
+                itemName, 
+                itemDescription, 
+                MAX(Bids.bidAmountGBP) AS currentPrice, 
+                a1.auctionID,
+                AVG(rating) AS avgRating
+            FROM Auctions a1
+            INNER JOIN Items USING (itemID)
+            INNER JOIN Bids ON a1.auctionID = Bids.auctionID
+            LEFT JOIN Ratings ON a1.auctionID = Ratings.auctionID
+            WHERE Bids.userID = $userID AND Bids.bidAmountGBP = (
+                SELECT MAX(bidAmountGBP)
+                FROM Bids b
+                WHERE b.auctionID = a1.auctionID
+              )
+            GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID";
+  }
+  $resultrec = $conn->query($sql);
+  if ($resultrec === false) {
+    // Output error message
+    echo "Error in query: " . $conn->error;
+  } else {
+    // Output data for each row
+    while ($row = $resultrec->fetch_assoc()) {
+      print_listing_rating($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID'], (int) $row['avgRating']);
+    }
   }
 
   ?>
-
+</div>
 
 <?php include_once("footer.php") ?>
 
@@ -164,59 +181,59 @@ $errors = [];
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     initializeCountdowns();
-});
+  });
 
-/**
- * Initializes all countdown elements and starts their timers.
- */
-function initializeCountdowns() {
+  /**
+   * Initializes all countdown elements and starts their timers.
+   */
+  function initializeCountdowns() {
     const countdownElements = document.querySelectorAll(".countdown");
 
     countdownElements.forEach((element) => {
-        const remainingTime = parseInt(element.getAttribute("data-time"), 10);
+      const remainingTime = parseInt(element.getAttribute("data-time"), 10);
 
-        if (!isNaN(remainingTime) && remainingTime > 0) {
-            startCountdown(element, remainingTime);
-        } else {
-            element.textContent = "Auction has Ended";
-        }
+      if (!isNaN(remainingTime) && remainingTime > 0) {
+        startCountdown(element, remainingTime);
+      } else {
+        element.textContent = "Auction has Ended";
+      }
     });
-}
+  }
 
-/**
- * Starts the countdown for a given element.
- * @param {HTMLElement} element - The HTML element to update.
- * @param {number} remainingTime - The remaining time in seconds.
- */
-function startCountdown(element, remainingTime) {
+  /**
+   * Starts the countdown for a given element.
+   * @param {HTMLElement} element - The HTML element to update.
+   * @param {number} remainingTime - The remaining time in seconds.
+   */
+  function startCountdown(element, remainingTime) {
     function updateCountdown() {
-        if (remainingTime > 0) {
-            const timeFormatted = formatTime(remainingTime);
-            element.textContent = timeFormatted;
+      if (remainingTime > 0) {
+        const timeFormatted = formatTime(remainingTime);
+        element.textContent = timeFormatted;
 
-            remainingTime--;
-            setTimeout(updateCountdown, 1000);
-        } else {
-            element.textContent = "Auction has Ended";
-        }
+        remainingTime--;
+        setTimeout(updateCountdown, 1000);
+      } else {
+        element.textContent = "Auction has Ended";
+      }
     }
 
     updateCountdown();
-}
+  }
 
-/**
- * Formats a given time in seconds into days, hours, minutes, and seconds.
- * @param {number} seconds - The time in seconds to format.
- * @returns {string} - The formatted time string.
- */
-function formatTime(seconds) {
+  /**
+   * Formats a given time in seconds into days, hours, minutes, and seconds.
+   * @param {number} seconds - The time in seconds to format.
+   * @returns {string} - The formatted time string.
+   */
+  function formatTime(seconds) {
     const days = Math.floor(seconds / (60 * 60 * 24));
     const hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((seconds % (60 * 60)) / 60);
     const secs = seconds % 60;
 
     return `${days}d ${hours}h ${minutes}m ${secs}s`;
-}
+  }
 </script>
