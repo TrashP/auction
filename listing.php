@@ -47,6 +47,14 @@
     exit();
   }
 
+  // Check if the user is watching the item
+  $watchQuery = "SELECT watching FROM Watchlist WHERE userID = ? AND auctionID = ?";
+  $watchStmt = $conn->prepare($watchQuery);
+  $watchStmt->bind_param("ii", $userID, $auctionID);
+  $watchStmt->execute();
+  $watchResult = $watchStmt->get_result();
+  $watching = $watchResult->num_rows > 0 ? $watchResult->fetch_assoc()['watching'] : false;
+
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
@@ -105,38 +113,29 @@
   //       to determine if the user is already watching this item.
   //       For now, this is hardcoded.
   $has_session = true;
-  $watching = false;
 ?>
 
 
 <div class="container">
 
-<div class="row"> <!-- Row #1 with auction title + watch button -->
-  <div class="col-sm-8"> <!-- Left col -->
-    <h2 class="my-3"><?php echo($title); ?></h2>
-  </div>
-  <div class="col-sm-4 align-self-center"> <!-- Right col -->
-<?php
-  /* The following watchlist functionality uses JavaScript, but could
-     just as easily use PHP as in other places in the code.
-     Added conditional to check if the watchlist button should be displayed
-     to sellers/buyers (show to buyers/ don't show to sellers)
-     */
-
-  if ($now < $end_time && $_SESSION['account_type'] == 'Buyer'):
-?>
-
-
-    <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
+<<div class="row">
+        <div class="col-sm-8">
+            <h2 class="my-3"><?= htmlspecialchars($title) ?></h2>
+        </div>
+        <div class="col-sm-4 align-self-center">
+            <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
+                <!-- Watchlist Button -->
+                <form method="POST" action="watchlist_funcs.php">
+                    <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
+                    <input type="hidden" name="userID" value="<?= $userID ?>">
+                    <input type="hidden" name="itemID" value="<?= $itemID ?>">
+                    <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger' : 'btn-secondary' ?>">
+                        <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
+                    </button>
+                </form>
+            <?php endif; ?>
+        </div>
     </div>
-    <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-success btn-sm" disabled>Watching</button>
-      <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWatchlist()">Remove watch</button>
-    </div>
-<?php endif /* Print nothing otherwise */ ?>
-  </div>
-</div>
 
 <div class="row"> <!-- Row #2 with auction description + bidding info -->
   <div class="col-sm-8"> <!-- Left col with item info -->
