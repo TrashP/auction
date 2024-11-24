@@ -88,8 +88,7 @@
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-            $file_name = htmlspecialchars(basename($_FILES["uploadPhoto"]["name"]));
-
+            // $file_name = htmlspecialchars(basename($_FILES["uploadPhoto"]["name"]));
             // echo 'bob ';
             // echo $file_name;
             // echo $target_file;
@@ -145,10 +144,11 @@
                     echo '<div class="alert alert-danger mt-3" role="alert">Error: Please upload your file again.</div>';
                   }
             }
+
             
             //insert into Items table
-            $itemsQuery = "INSERT INTO Items (itemName, itemDescription, category)
-                      VALUES ('$title', '$description', '$category')";
+            $itemsQuery = "INSERT INTO Items (itemName, itemDescription, category, itemPhotoPath)
+                      VALUES ('$title', '$description', '$category', '$target_file')";
             
             $itemsResult = $conn->query($itemsQuery);
 
