@@ -25,7 +25,7 @@
       before they try to send it, but that kind of functionality should be
       extremely low-priority / only done after all database functions are
       complete. -->
-      <form method="post" action="create_auction_result.php">
+      <form method="post" action="create_auction_result.php" enctype="multipart/form-data">
 
       <!--------------------- Auction Title ------------------------->
 
@@ -124,6 +124,21 @@
             <small id="endDateHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Day for the auction to end.</small>
           </div>
         </div>
+
+      <!--------------------- Auction Upload Photos -------------------->
+
+      <div class="form-group row">
+          <label for="uploadPhoto" class="col-sm-2 col-form-label text-right">Upload Photo</label>
+          <div class="col-sm-10">
+            <!-- <div class="input-group">
+              <div class="input-group-prepend"> -->
+              <!-- </div> -->
+              <input type="file" class="form-control" id="uploadPhoto" name="uploadPhoto" accept="image/*">
+            <!-- </div> -->
+            <small id="uploadPhotoHelp" class="form-text text-muted"><span class="text-danger">* Required. </span> Upload a photo to display in your auction listing. Supported file types: JPG, JPEG, PNG</small>
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary form-control">Create Auction</button>
       </form>
     </div>
