@@ -20,7 +20,7 @@
 /* TODO #2: Extract form data into variables. If there is an
             issue, give some semi-helpful feedback to user. */
             
-            print_r($_GET);
+            //print_r($_GET);
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $userID = $_SESSION['userID'] ?? 0;
                 $auctionID = $_GET['auctionID'] ?? 0;

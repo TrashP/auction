@@ -14,7 +14,7 @@
   $userID = $_SESSION['userID'];
 
   // TODO: Use item_id to make a query to the database.
-  $itemsQuery = "SELECT itemName, itemDescription FROM items WHERE itemID = '$itemID'";
+  $itemsQuery = "SELECT itemName, itemDescription, itemPhotoPath FROM items WHERE itemID = '$itemID'";
   $itemsResult = $conn->query($itemsQuery);
   $item = $itemsResult->fetch_assoc();
 
@@ -37,9 +37,7 @@
   $bidsResult = $conn->query($bidsQuery);
   $bids = $bidsResult->fetch_assoc();
 
-  print_r($bids);
-
-  $auctionQuery = "SELECT auctionDate FROM auctions WHERE auctionID = '$auctionID'";
+  $auctionQuery = "SELECT auctionDate, startPriceGBP FROM auctions WHERE auctionID = '$auctionID'";
   $auctionResult = $conn->query($auctionQuery);
   $auction = $auctionResult->fetch_assoc();
 
@@ -52,6 +50,8 @@
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
+  $photo = $item['itemPhotoPath'];
+  $start_price = $auction['startPriceGBP'];
   $current_price = $bids['currentPrice'];
   $max_user_bid = $bids['maxUserBid'];
   $num_bids = $bids['numBids'];
@@ -112,71 +112,69 @@
 
 <div class="container">
 
-<div class="row"> <!-- Row #1 with auction title + watch button -->
-  <div class="col-sm-8"> <!-- Left col -->
-    <h2 class="my-3"><?php echo($title); ?></h2>
-  </div>
-  <div class="col-sm-4 align-self-center"> <!-- Right col -->
-<?php
-  /* The following watchlist functionality uses JavaScript, but could
-     just as easily use PHP as in other places in the code.
-     Added conditional to check if the watchlist button should be displayed
-     to sellers/buyers (show to buyers/ don't show to sellers)
-     */
-
-  if ($now < $end_time && $_SESSION['account_type'] == 'Buyer'):
-?>
-
-
-    <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
+  <div class="row mb-4"> <!-- Row #1 with auction image + details -->
+    <!-- Left column for image -->
+    <div class="col-sm-7 d-flex flex-column align-items-center"> 
+      <img src="<?php echo htmlspecialchars($photo); ?>" class="img-fluid mb-4" style="object-fit: contain; max-height: 300px;"> <!-- Added margin below the photo -->
+      <h2 class="text-center"><?php echo($title); ?></h2>
     </div>
-    <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-success btn-sm" disabled>Watching</button>
-      <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWatchlist()">Remove watch</button>
+
+    <!-- Right column for watchlist, auction details, and bidding -->
+    <div class="col-sm-5">
+      <?php if ($now > $end_time): ?>
+        <!-- Auction Ended Message -->
+        <div class="card p-3 text-center mb-3">
+          <h5 style="color: red;">Auction Ended</h5>
+          <p><strong>Ended On:</strong> <?php echo(date_format($end_time, 'j M H:i')) ?></p>
+        </div>
+      <?php else: ?>
+        <!-- Watchlist Buttons -->
+        <div class="mb-3"> <!-- Added margin for spacing -->
+          <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+            <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?>>
+              <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="addToWatchlist()">+ Add to watchlist</button>
+            </div>
+            <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?>>
+              <button type="button" class="btn btn-success btn-sm w-100 mb-1" disabled>Watching</button>
+              <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeFromWatchlist()">Remove watch</button>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <!-- Auction Details -->
+        <div class="card p-3 mb-3">
+          <h5>Auction Details</h5>
+          <p><strong>Auction End Date:</strong> <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>
+          <p class="lead"><strong>Current Highest Bid:</strong> £<?php echo(number_format($current_price, 2)) ?></p>
+        </div>
+
+        <!-- Place Your Bid -->
+        <div class="card p-3" style="margin-top: -20px;"> <!-- Pulled upwards -->
+          <h5>Place Your Bid</h5>
+          <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+            <p class="lead"><strong>My Highest Bid:</strong> £<?php echo(number_format($max_user_bid, 2)) ?></p>
+            <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">£</span>
+                </div>
+                <input type="number" class="form-control" id="bid" name="bid" placeholder="Enter your bid" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Place Bid</button>
+            </form>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
     </div>
-<?php endif /* Print nothing otherwise */ ?>
+
+  <div class="row"> <!-- Row #2 with auction description -->
+  <div class="col-sm-12">
+    <h5><strong>Description</strong></h5> <!-- Added Description header -->
+    <div class="itemDescription">
+      <?php echo($description); ?>
+    </div>
   </div>
 </div>
-
-<div class="row"> <!-- Row #2 with auction description + bidding info -->
-  <div class="col-sm-8"> <!-- Left col with item info -->
-
-    <div class="itemDescription">
-    <?php echo($description); ?>
-    </div>
-
-  </div>
-
-  <div class="col-sm-4"> <!-- Right col with bidding info -->
-
-    <p>
-    <?php if ($now > $end_time): ?>
-    <p>This auction ended on the <?php echo(date_format($end_time, 'j M H:i')) ?></p>
-    <!-- TODO: Print the result of the auction here? -->
-<?php else: ?>
-    <p>Auction End Date: <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
-
-    <p class="lead">Current Highest bid: £<?php echo(number_format($current_price, 2)) ?></p>
-    
-    <p class="lead">My Highest bid: £<?php echo(number_format($max_user_bid, 2)) ?></p>
-
-    <!-- Available only to buyers -->
-    <?php if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] == 'Buyer'): ?>
-        <!-- Bidding form -->
-        <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">£</span>
-                </div>
-                <input type="number" class="form-control" id="bid" name="bid">
-            </div>
-            <button style="margin-top: 10px;" type="submit" class="btn btn-primary form-control">Place bid</button>
-        </form>
-    <?php endif; ?>
-<?php endif; ?>
-
-
   
   </div> <!-- End of right col with bidding info -->
 
