@@ -4,6 +4,7 @@
 <?php
 
   require 'db_connection.php';
+  date_default_timezone_set('Europe/London');
   if (session_status() === PHP_SESSION_NONE) {
       session_start(); // Start the session only if it hasn't been started already
   }
@@ -95,8 +96,9 @@
   //       to lack of high-enough bids. Or maybe not.
   
   // Calculate time to auction end:
-  $now = new DateTime();
   
+  $now = new DateTime();
+
   if ($now < $end_time) {
     $time_to_end = date_diff($now, $end_time);
     $time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';

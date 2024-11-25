@@ -3,9 +3,14 @@
 
 
 <?php
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
 
+    date_default_timezone_set('Europe/London');
+    echo "start";
 
 //alter auctions table to include a processed coloumn
+
 
 // Query to fetch expired auctions where emails haven't been sent
 $sql = "SELECT a.auctionID, a.userID AS ownerID, a.highestBidderID, 
@@ -17,7 +22,18 @@ $sql = "SELECT a.auctionID, a.userID AS ownerID, a.highestBidderID,
         LEFT JOIN Users u2 ON a.highestBidderID = u2.userID
         WHERE a.auctionDate <= NOW() AND a.processed = FALSE";
 
-$result = $mysqli->query($sql);
+
+
+
+
+$result = $conn->query($sql);
+
+if (!$result) {
+    die("Query failed: " . $mysqli->error);
+}
+
+
+echo "start";
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -30,8 +46,8 @@ if ($result->num_rows > 0) {
 
         // Send email to the auction owner
         $subjectOwner = "Auction #$auctionID for '$itemName' Has Ended";
-        $messageOwner = "Dear $ownerName,\n\nYour auction (ID: $auctionID, Item: $itemName) has ended. 
-                         Please review the results and contact the highest bidder if applicable.";
+        $messageOwner = "Dear $ownerName,\n\nYour auction (ID: $auctionID, Item: $itemName) has ended. Please review the results and contact the highest bidder if applicable.";
+        echo "sent email to owner ";
         sendEmail($ownerName, $ownerEmail, $subjectOwner, $messageOwner);
 
         // Send email to the highest bidder (if there is a winner)
@@ -39,15 +55,17 @@ if ($result->num_rows > 0) {
             $subjectBidder = "Congratulations on Winning Auction #$auctionID";
             $messageBidder = "Dear $bidderName,\n\nCongratulations! You have won the auction 
                               (ID: $auctionID, Item: $itemName). Please contact the auction owner for further details.";
+            echo "sent email to highest bidder";
             sendEmail($bidderName, $bidderEmail, $subjectBidder, $messageBidder);
         }
 
         // Mark the auction as processed
         $updateSql = "UPDATE Auctions SET processed = TRUE WHERE auctionID = ?";
-        $stmt = $mysqli->prepare($updateSql);
+        $stmt = $conn->prepare($updateSql);
         $stmt->bind_param("i", $auctionID);
         $stmt->execute();
         $stmt->close();
+
     }
 } else {
     echo "No expired auctions to process.";
