@@ -43,7 +43,6 @@ session_start();
     <ul class="navbar-nav align-middle">
       <li class="nav-item mx-1">
         <a class="nav-link" href="browse.php">Browse</a>
-        <a class="nav-link" href="leaderboard.php">Leaderboard</a>
       </li>
       <?php
       if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Buyer') {
@@ -68,6 +67,9 @@ session_start();
         </li>');
       }
       ?>
+      <li>
+        <a class="nav-link" href="leaderboard.php">Leaderboard</a>
+      </li>
     </ul>
   </nav>
 
