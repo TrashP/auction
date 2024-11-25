@@ -75,7 +75,8 @@ $sql = "CREATE TABLE IF NOT EXISTS Auctions
         startPriceGBP INT NOT NULL,
         reservePriceGBP INT NOT NULL,
         highestBidderID INT,
-        quantity INT NOT NULL
+        quantity INT NOT NULL,
+        processed BOOLEAN DEFAULT FALSE
         )";
 
 if ($mysqli->query($sql) === TRUE) {
