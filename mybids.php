@@ -172,6 +172,49 @@ if (!$bidsResult) {
   }
 
   ?>
+
+  <h2 class="my-3">My Reviews</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Item</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
+        $userID = $_SESSION['userID'];
+
+        // SQL query to select the ratings and comments for this seller
+        $stmt = $conn->prepare("SELECT firstName, lastName, itemName, rating, comment
+                    FROM Auctions
+                    INNER JOIN Ratings USING (auctionID)
+                    INNER JOIN Items USING (itemID)
+                    INNER JOIN Users u1 ON Auctions.userID = u1.userID
+                    WHERE Ratings.userID = ?");
+
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+          echo "<tr>";
+          echo "<td>" . $row['firstName'] . "</td>";
+          echo "<td>" . $row['lastName'] . "</td>";
+          echo "<td>" . $row['itemName'] . "</td>";
+          echo "<td>" . $row['rating'] . "</td>";
+          echo "<td>" . $row['comment'] . "</td>";
+          echo "</tr>";
+        }
+      }
+      $conn->close();
+      ?>
+    </tbody>
+  </table>
 </div>
 
 <?php include_once("footer.php") ?>

@@ -72,6 +72,7 @@
               <option value="pricehigh" <?php echo ($userSort == 'pricehigh') ? 'selected' : '' ?>>Price (high to low)
               </option>
               <option value="date" <?php echo ($userSort == 'date') ? 'selected' : '' ?>>Soonest expiry</option>
+              <option value="rating" <?php echo ($userSort == 'rating') ? 'selected' : '' ?>>Rating</option>
             </select>
           </div>
         </div>
@@ -181,8 +182,10 @@ if ($ordering == "pricelow") {
   $sql .= " ORDER BY currentPrice ASC";
 } else if ($ordering == "pricehigh") {
   $sql .= " ORDER BY currentPrice DESC";
-} else {
+} else if ($ordering == "date") {
   $sql .= " ORDER BY auctionDate ASC";
+} else {
+  $sql .= " ORDER BY avgRating DESC, currentPrice ASC";
 }
 
 $result = $conn->query($sql);
