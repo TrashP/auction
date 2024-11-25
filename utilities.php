@@ -84,7 +84,7 @@ function print_listing_rating($item_id, $title, $desc, $price, $auction_id, $rat
   echo ('
     <li class="list-group-item d-flex justify-content-between">
     <div class="p-2 mr-5"><h5><a href="listing.php?itemID=' . $item_id . '&auctionID=' . $auction_id . '">' . $title . '</a></h5>' . $desc_shortened . '</br>' . $rating . '</div>
-    <div class="text-center text-nowrap"><span style="font-size: 1.5em">£' . number_format($price, 2) . '</span><br/>' . '<a href="rating.php?auctionID=' . $auction_id . '">Rate</a></div>
+    <div class="text-center text-nowrap"><span style="font-size: 1.5em">£' . number_format($price, 2) . '</span><br/>' . '<a href="rating.php?auctionID=' . $auction_id . '">Rate</a>' . '</br><a href="points.php?auctionID=' . $auction_id . '">Claim Points</a>' . '</div>
   </li>'
   );
 }

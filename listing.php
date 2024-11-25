@@ -14,7 +14,7 @@ $auctionID = $_GET['auctionID'];
 $userID = $_SESSION['userID'];
 
 // TODO: Use item_id to make a query to the database.
-$itemsQuery = "SELECT itemName, itemDescription, itemPhotoPath FROM items WHERE itemID = '$itemID'";
+$itemsQuery = "SELECT itemName, itemDescription, itemPhotoPath FROM Items WHERE itemID = '$itemID'";
 $itemsResult = $conn->query($itemsQuery);
 $item = $itemsResult->fetch_assoc();
 
@@ -37,7 +37,7 @@ $bidsQuery = "SELECT
 $bidsResult = $conn->query($bidsQuery);
 $bids = $bidsResult->fetch_assoc();
 
-$auctionQuery = "SELECT auctionDate, startPriceGBP FROM auctions WHERE auctionID = '$auctionID'";
+$auctionQuery = "SELECT auctionDate, startPriceGBP FROM Auctions WHERE auctionID = '$auctionID'";
 $auctionResult = $conn->query($auctionQuery);
 $auction = $auctionResult->fetch_assoc();
 

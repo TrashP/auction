@@ -157,7 +157,7 @@ if (!$bidsResult) {
                 SELECT MAX(bidAmountGBP)
                 FROM Bids b
                 WHERE b.auctionID = a1.auctionID
-              )
+              ) AND Bids.bidAmountGBP >= reservePriceGBP AND auctionDate < NOW()
             GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID";
   }
   $resultrec = $conn->query($sql);
