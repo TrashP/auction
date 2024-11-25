@@ -1,14 +1,15 @@
 <?php
-  session_start();
+session_start();
 ?>
 
 
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+
   <!-- Bootstrap and FontAwesome CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -22,30 +23,31 @@
 
 <body>
 
-<!-- Navbars -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="#">Auction Site</a>
-  <div class="ml-auto d-flex align-items-center">
-    <?php
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+  <!-- Navbars -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
+    <a class="navbar-brand" href="#">Auction Site</a>
+    <div class="ml-auto d-flex align-items-center">
+      <?php
+      if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
         echo "<span class='mr-3'>Welcome, " . htmlspecialchars($_SESSION['firstName']) . "</span>";
         echo "<span class='mr-3'>Account Type: " . htmlspecialchars($_SESSION['account_type']) . "</span>";
         echo '<a class="btn btn-outline-secondary btn-sm" href="logout.php">Logout</a>';
-    } else {
+      } else {
         echo '<a class="btn btn-outline-primary btn-sm" href="#" data-toggle="modal" data-target="#loginModal">Login</a>';
-    }
-    ?>
-  </div>
-</nav>
+      }
+      ?>
+    </div>
+  </nav>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <ul class="navbar-nav align-middle">
-    <li class="nav-item mx-1">
-      <a class="nav-link" href="browse.php">Browse</a>
-    </li>
-    <?php
-    if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Buyer') {
-        echo('
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <ul class="navbar-nav align-middle">
+      <li class="nav-item mx-1">
+        <a class="nav-link" href="browse.php">Browse</a>
+        <a class="nav-link" href="leaderboard.php">Leaderboard</a>
+      </li>
+      <?php
+      if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Buyer') {
+        echo ('
         <li class="nav-item mx-1">
           <a class="nav-link" href="mybids.php">My Bids</a>
         </li>
@@ -55,46 +57,46 @@
         <li class="nav-item mx-1">
           <a class="nav-link" href="watchlist_funcs.php">Watchlist</a>
         </li>');
-    }
-    if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
-        echo('
+      }
+      if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
+        echo ('
         <li class="nav-item mx-1">
           <a class="nav-link" href="mylistings.php">My Listings</a>
         </li>
         <li class="nav-item ml-3">
           <a class="nav-link btn border-light" href="create_auction.php">+ Create auction</a>
         </li>');
-    }
-    ?>
-  </ul>
-</nav>
+      }
+      ?>
+    </ul>
+  </nav>
 
-<!-- Login modal -->
-<div class="modal fade" id="loginModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <!-- Login modal -->
+  <div class="modal fade" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Login</h4>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Login</h4>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form method="POST" action="login_result.php">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" class="form-control" id="email" placeholder="Email" name="email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary form-control">Sign in</button>
+          </form>
+          <div class="text-center">or <a href="register.php">create an account</a></div>
+        </div>
+
       </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <form method="POST" action="login_result.php">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" placeholder="Email" name="email">
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Password" name="password">
-          </div>
-          <button type="submit" class="btn btn-primary form-control">Sign in</button>
-        </form>
-        <div class="text-center">or <a href="register.php">create an account</a></div>
-      </div>
-
     </div>
-  </div>
-</div> <!-- End modal -->
+  </div> <!-- End modal -->
