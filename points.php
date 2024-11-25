@@ -62,7 +62,7 @@
                 echo "Error inserting data: " . $stmt->error . "</br>";
             }
         }
-        echo "Click  <a href='mybids.php'>here</a> to go back to myBids.</br>";
+        echo "Click  <a href='browse.php'>here</a> to go back to Browse.</br>";
     }
 
     $conn->close();

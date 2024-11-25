@@ -63,7 +63,11 @@
           echo "</tr>";
         }
 
-        $avgRating /= $result->num_rows;
+        if ($result->num_rows == 0) {
+          $avgRating = "N/A";
+        } else {
+          $avgRating /= $result->num_rows;
+        }
       }
 
       ?>
@@ -71,5 +75,37 @@
   </table>
   <h3 class="my-3">Average Rating: <?php echo $avgRating ?></h3>
 
+  <h2 class="my-3">My Sold Items</h2>
+  <?php
+  if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Seller') {
+    $userID = $_SESSION['userID'];
+
+    // SQL query to select Auctions sold by this seller
+    $sql = "SELECT DISTINCT
+                Items.itemID, 
+                itemName, 
+                itemDescription, 
+                MAX(Bids.bidAmountGBP) AS currentPrice, 
+                a1.auctionID,
+                a1.reservePriceGBP
+            FROM Auctions a1
+            INNER JOIN Items USING (itemID)
+            INNER JOIN Bids ON a1.auctionID = Bids.auctionID
+            WHERE a1.userID = $userID AND auctionDate < NOW()
+            GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID, a1.reservePriceGBP
+            HAVING currentPrice >= reservePriceGBP";
+  }
+  $resultrec = $conn->query($sql);
+  if ($resultrec === false) {
+    // Output error message
+    echo "Error in query: " . $conn->error;
+  } else {
+    // Output data for each row
+    while ($row = $resultrec->fetch_assoc()) {
+      print_listing_seller($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID']);
+    }
+  }
+
+  ?>
 
   <?php include_once("footer.php") ?>

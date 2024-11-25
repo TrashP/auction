@@ -89,4 +89,22 @@ function print_listing_rating($item_id, $title, $desc, $price, $auction_id, $rat
   );
 }
 
+function print_listing_seller($item_id, $title, $desc, $price, $auction_id)
+{
+  // Truncate long descriptions
+  if (strlen($desc) > 250) {
+    $desc_shortened = substr($desc, 0, 250) . '...';
+  } else {
+    $desc_shortened = $desc;
+  }
+
+  // Print HTML
+  echo ('
+    <li class="list-group-item d-flex justify-content-between">
+    <div class="p-2 mr-5"><h5><a href="listing.php?itemID=' . $item_id . '&auctionID=' . $auction_id . '">' . $title . '</a></h5>' . $desc_shortened . '</br></div>
+    <div class="text-center text-nowrap"><span style="font-size: 1.5em">£' . number_format($price, 2) . '</span>' . '</br><a href="points.php?auctionID=' . $auction_id . '">Claim Points</a>' . '</div>
+  </li>'
+  );
+}
+
 ?>
