@@ -178,6 +178,25 @@ WHERE Items.category = '$category'
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
+if ($category !== null and $category !== 'all' and $keyword !== null and $keyword !== '') {
+  $category = htmlspecialchars($category);
+  $sql = "SELECT 
+    Items.itemID, 
+    itemName, 
+    itemDescription, 
+    GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
+    COUNT(Bids.userID) AS numBids,
+    a1.auctionID,
+    auctionDate,
+    AVG(rating) AS avgRating
+FROM Auctions a1
+INNER JOIN Items USING (itemID)
+LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
+LEFT JOIN Ratings ON Ratings.auctionID = a1.auctionID
+WHERE Items.category = '$category' AND itemName LIKE '%$keyword%'
+GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
+}
+
 if ($ordering == "pricelow") {
   $sql .= " ORDER BY currentPrice ASC";
 } else if ($ordering == "pricehigh") {
