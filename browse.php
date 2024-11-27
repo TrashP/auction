@@ -229,7 +229,7 @@ $max_page = ceil($num_results / $results_per_page);
         if ($skip == 0 and $res != 0) {
 
 
-          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID'], (int) $row['avgRating']);
+          print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], new DateTime($row['auctionDate']), $row['auctionID'], (int) $row['avgRating']);
           $res -= 1;
         } else {
           $skip -= 1;
