@@ -1,16 +1,16 @@
 <?php include_once("header.php") ?>
 <?php include_once("db_connection.php"); ?>
 <?php require("utilities.php") ?>
-
+<?php
+ini_set('display_errors', 0); // Disable error display
+error_reporting(E_ERROR | E_PARSE); // Show only errors and parse errors
+?>
 
 <!-- // This page is for showing a user the auctions they've bid on.
 // It will be pretty similar to browse.php, except there is no search bar.
 // This can be started after browse.php is working with a database.
 // Feel free to extract out useful functions from browse.php and put them in
 // the shared "utilities.php" where they can be shared by multiple files. -->
-
-
-<!-- // TODO: Check user's credentials (cookie/session). -->
 
 <?php
 if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] == NULL || !isset($_SESSION['userID'])) {
