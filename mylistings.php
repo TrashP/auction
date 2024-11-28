@@ -4,7 +4,6 @@
 
 <div class="container">
 
-  <h2 class="my-3">My Listings</h2>
 
   <?php
   // This page is for showing a user the auction listings they've made.
@@ -15,12 +14,147 @@
   
 
   // TODO: Check user's credentials (cookie/session).
+
+    if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] == NULL || !isset($_SESSION['userID'])) {
+      //maybe supply a prompt
+      header("Location: register.php");
+      exit;
+    }
+
+    // GET user info from session storage
+    $userID = $_SESSION["userID"];
+    $accountType = $_SESSION["account_type"];
+
+    $errors = [];
+
+    /*----------Blank value errors----------*/
+    //Checks if all required fields are blank
+    if (empty($userID)) {
+      $errors[] = "Something went wrong... Could not get user id.";
+    }
+
+    if (empty($accountType)) {
+      $errors[] = "Something went wrong... Could not get account type.";
+    }
+
+    /*----------Logical Errors----------*/
+    if ($accountType == "Buyer") {
+      $errors[] = "Buyers do not have listings";
+    }
+    if (!empty($errors)) {
+      // Display errors
+      echo '<div class="alert alert-danger"><ul>';
+      foreach ($errors as $error) {
+        echo "<li>$error</li>";
+      }
+      $browseLink = "browse.php";
+      echo '<div class="text-center"><a href="' . $browseLink . '">Go back to the browse page.</a></div>';
+      mysqli_close($conn);
+      exit();
+    }
+    ?>
+
+     
   
-  // TODO: Perform a query to pull up their auctions.
+
+    <!-- // TODO: Perform a query to pull up the auctions that belong to the user. -->
+
+    <?php
+
+
+      $auctionsQuery = $conn->prepare("
+        SELECT 
+            Auctions.*,
+            Items.itemName,
+            IFNULL(MAX(Bids.bidAmountGBP), 0) AS highestBid
+        FROM Auctions
+        INNER JOIN 
+            Items ON Auctions.itemID = Items.itemID
+        LEFT JOIN 
+            Bids ON Auctions.auctionID = Bids.auctionID
+        WHERE 
+            Auctions.userID = ?
+        GROUP BY 
+            Auctions.auctionID");
+
+      $auctionsQuery->bind_param("i", $userID);
+      $auctionsQuery->execute();
+      $auctionsResults = $auctionsQuery->get_result();
+
+
+    if (!$auctionsResults) {
+      echo '<div class="alert alert-danger mt-3" role="alert"> Error: adding data into listings table </div>';
+      mysqli_close($conn);
+      exit();
+    }
+
+
+    ?>
+    <!-- // TODO: Loop through results and print them out as list items. -->
+    <!-- PUT HTML HERE -->
+
+
+
+
+    <div class="container">
+      <h2 class="my-3">My Listings</h2>
+
+
+
+      <?php if ($auctionsResults->num_rows > 0): ?>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Starting Price</th>
+              <th scope="col">Reserve Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Current Highest Bid (£)</th>
+              <th scope="col">Time Till End</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $currentDate = new DateTime();
+            while ($data = $auctionsResults->fetch_assoc()) {
+              // var_dump($data);
+              $auctionEndDate = new DateTime($data['auctionDate']);
+      
+              $timeDiff = max(0, $auctionEndDate->getTimestamp() - $currentDate->getTimestamp());
+              echo "<tr>";
+              echo "<td><a href='listing.php?auctionID=" . $data['auctionID'] . "&itemID=" . $data['itemID'] . "'>" . htmlspecialchars($data['itemName']) . "</a></td>";
+
+              echo "<td>£" . htmlspecialchars($data['startPriceGBP']) . "</td>";
+
+              echo "<td>£" . htmlspecialchars($data['reservePriceGBP']) . "</td>";
+
+              echo "<td>£" . htmlspecialchars($data['quantity']) . "</td>";
+
+              echo "<td>£" . htmlspecialchars($data['highestBid']) . "</td>";
+
+
+              if ($timeDiff === 0) {
+                // Auction has ended
+                echo "<td>Auction has Ended</td>";
+              } else {
+                // Pass remaining time to JavaScript for dynamic countdown
+      
+                echo "<td><span class='countdown' data-time='$timeDiff'></span></td>";
+              }
+
+              echo "</tr>";
+            }
+            ?>
+          </tbody>
+        </table>
+        <?php
+      else:
+        echo "<tr><td>User has not made any lisitings</td></tr>";
+      endif;
+      ?>
+    </div>
   
-  // TODO: Loop through results and print them out as list items.
-  
-  ?>
+
 
   <h2 class="my-3">My Reviews</h2>
   <table class="table">
@@ -109,3 +243,63 @@
   ?>
 
   <?php include_once("footer.php") ?>
+
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeCountdowns();
+  });
+
+  /**
+   * Initializes all countdown elements and starts their timers.
+   */
+  function initializeCountdowns() {
+    const countdownElements = document.querySelectorAll(".countdown");
+
+    countdownElements.forEach((element) => {
+      const remainingTime = parseInt(element.getAttribute("data-time"), 10);
+
+      if (!isNaN(remainingTime) && remainingTime > 0) {
+        startCountdown(element, remainingTime);
+      } else {
+        element.textContent = "Auction has Ended";
+      }
+    });
+  }
+
+  /**
+   * Starts the countdown for a given element.
+   * @param {HTMLElement} element - The HTML element to update.
+   * @param {number} remainingTime - The remaining time in seconds.
+   */
+  function startCountdown(element, remainingTime) {
+    function updateCountdown() {
+      if (remainingTime > 0) {
+        const timeFormatted = formatTime(remainingTime);
+        element.textContent = timeFormatted;
+
+        remainingTime--;
+        setTimeout(updateCountdown, 1000);
+      } else {
+        element.textContent = "Auction has Ended";
+      }
+    }
+
+    updateCountdown();
+  }
+
+  /**
+   * Formats a given time in seconds into days, hours, minutes, and seconds.
+   * @param {number} seconds - The time in seconds to format.
+   * @returns {string} - The formatted time string.
+   */
+  function formatTime(seconds) {
+    const days = Math.floor(seconds / (60 * 60 * 24));
+    const hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+    const secs = seconds % 60;
+
+    return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  }
+</script>

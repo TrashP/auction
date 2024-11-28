@@ -45,7 +45,7 @@ if (!empty($errors)) {
   foreach ($errors as $error) {
     echo "<li>$error</li>";
   }
-  $browseLink = "browe.php";
+  $browseLink = "browse.php";
   echo '<div class="text-center"><a href="' . $browseLink . '">Go back to the browse page.</a></div>';
   mysqli_close($conn);
   exit();
@@ -117,7 +117,7 @@ if (!$bidsResult) {
           echo "<td>£" . htmlspecialchars($data['highestBid']) . "</td>";
 
 
-          if ($remainingSeconds === 0) {
+          if ($timeDiff === 0) {
             // Auction has ended
             echo "<td>Auction has Ended</td>";
           } else {
@@ -157,7 +157,7 @@ if (!$bidsResult) {
                 SELECT MAX(bidAmountGBP)
                 FROM Bids b
                 WHERE b.auctionID = a1.auctionID
-              ) AND Bids.bidAmountGBP >= reservePriceGBP AND auctionDate < NOW()
+              )
             GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID";
   }
   $resultrec = $conn->query($sql);
@@ -172,49 +172,6 @@ if (!$bidsResult) {
   }
 
   ?>
-
-  <h2 class="my-3">My Reviews</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">First Name</th>
-        <th scope="col">Last Name</th>
-        <th scope="col">Item</th>
-        <th scope="col">Rating</th>
-        <th scope="col">Comment</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Buyer') {
-        $userID = $_SESSION['userID'];
-
-        // SQL query to select the ratings and comments for this seller
-        $stmt = $conn->prepare("SELECT firstName, lastName, itemName, rating, comment
-                    FROM Auctions
-                    INNER JOIN Ratings USING (auctionID)
-                    INNER JOIN Items USING (itemID)
-                    INNER JOIN Users u1 ON Auctions.userID = u1.userID
-                    WHERE Ratings.userID = ?");
-
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-          echo "<tr>";
-          echo "<td>" . $row['firstName'] . "</td>";
-          echo "<td>" . $row['lastName'] . "</td>";
-          echo "<td>" . $row['itemName'] . "</td>";
-          echo "<td>" . $row['rating'] . "</td>";
-          echo "<td>" . $row['comment'] . "</td>";
-          echo "</tr>";
-        }
-      }
-      $conn->close();
-      ?>
-    </tbody>
-  </table>
 </div>
 
 <?php include_once("footer.php") ?>
