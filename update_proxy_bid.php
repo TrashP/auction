@@ -20,13 +20,13 @@ if (!is_numeric($maxBid) || $maxBid <= 0) {
 }
 
 // Get the current price of the auction from the database
-$currentPriceQuery = "SELECT startPriceGBP FROM Auctions WHERE auctionID = '$auctionID'";
+$currentPriceQuery = "SELECT MAX(bidAmountGBP) as currentPriceGBP FROM Bids WHERE auctionID = '$auctionID'";
 $currentPriceResult = $conn->query($currentPriceQuery);
 if ($currentPriceResult->num_rows === 0) {
     echo "Error: Auction not found.";
     exit();
 }
-$currentPrice = $currentPriceResult->fetch_assoc()['startPriceGBP'];
+$currentPrice = $currentPriceResult->fetch_assoc()['currentPriceGBP'];
 
 // Get the current proxy bid ceiling for this user (if it exists)
 $currentProxyBidQuery = "SELECT maxBidGBP FROM ProxyBids WHERE userID = '$userID' AND auctionID = '$auctionID'";
