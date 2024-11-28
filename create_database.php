@@ -152,7 +152,6 @@ $sql = "CREATE TABLE IF NOT EXISTS ProxyBids
         userID INT NOT NULL,
         auctionID INT NOT NULL,
         maxBidGBP INT NOT NULL,
-        currentBidGBP INT NOT NULL,
         PRIMARY KEY (userID, auctionID)
         )";
 

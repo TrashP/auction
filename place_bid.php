@@ -124,7 +124,6 @@
                 }
             
             
-            
 /* TODO #5: Bid was placed, deal with outcomes  */
             if (!$placeBidResult) {
                 echo '<div class="alert alert-danger mt-3" role="alert">
