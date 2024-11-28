@@ -37,11 +37,12 @@ $mysqli->select_db($newDatabase);
 
 // Create the 'Items' table if it does not exist
 $sql = "CREATE TABLE IF NOT EXISTS Items
-        ( 
+        (
         itemID INT AUTO_INCREMENT PRIMARY KEY,
         itemName VARCHAR(255) NOT NULL,
         itemDescription VARCHAR(255),
-        category ENUM('Art and Collectibles', 'Electronics and Gadgets', 'Fashion and Accessories', 'Home and Garden', 'Automotive and Vehicles', 'Sports and Outdoors', 'Real Estate and Property', 'Books, Movies and Music', 'Toys and Games', 'Business and Industrial Equipment', 'Health and Beauty', 'Hobbies and Crafts', 'Pet Supplies', 'Industrial and Scientific', 'Charity and Fundraising', 'Others') NOT NULL
+        category ENUM('Art and Collectibles', 'Electronics and Gadgets', 'Fashion and Accessories', 'Home and Garden', 'Automotive and Vehicles', 'Sports and Outdoors', 'Real Estate and Property', 'Books, Movies and Music', 'Toys and Games', 'Business and Industrial Equipment', 'Health and Beauty', 'Hobbies and Crafts', 'Pet Supplies', 'Industrial and Scientific', 'Charity and Fundraising', 'Others') NOT NULL,
+        itemPhotoPath VARCHAR(255)
         )";
 
 if ($mysqli->query($sql) === TRUE) {
@@ -75,8 +76,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Auctions
         startPriceGBP INT NOT NULL,
         reservePriceGBP INT NOT NULL,
         highestBidderID INT,
-        quantity INT NOT NULL,
-        processed BOOLEAN DEFAULT FALSE
+        quantity INT NOT NULL
         )";
 
 if ($mysqli->query($sql) === TRUE) {
@@ -163,20 +163,20 @@ if ($mysqli->query($sql) === TRUE) {
 }
 
 // Add sample data to database
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music', 'photos/gibson_les_paul_guitar.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles', 'photos/charizard_card.jpg');";
 $mysqli->query($sql);
 
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category)
-        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories');";
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', 'photos/gold_chain.jpg');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
@@ -208,7 +208,7 @@ $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPrice
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
-        VALUES (4, 3, 4, '2024-07-02', 2000, 10000, 1);";
+        VALUES (4, 3, 4, '2024-07-02 18:45:01', 2000, 10000, 1);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
