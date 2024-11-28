@@ -37,7 +37,7 @@ $mysqli->select_db($newDatabase);
 
 // Create the 'Items' table if it does not exist
 $sql = "CREATE TABLE IF NOT EXISTS Items
-        (
+        ( 
         itemID INT AUTO_INCREMENT PRIMARY KEY,
         itemName VARCHAR(255) NOT NULL,
         itemDescription VARCHAR(255),
