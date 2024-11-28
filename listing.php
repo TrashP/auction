@@ -48,6 +48,14 @@
     exit();
   }
 
+  // Check if the user is watching the item
+  $watchQuery = "SELECT watching FROM Watchlist WHERE userID = ? AND auctionID = ?";
+  $watchStmt = $conn->prepare($watchQuery);
+  $watchStmt->bind_param("ii", $userID, $auctionID);
+  $watchStmt->execute();
+  $watchResult = $watchStmt->get_result();
+  $watching = $watchResult->num_rows > 0 ? $watchResult->fetch_assoc()['watching'] : false;
+
   // DELETEME: For now, using placeholder data.
   $title = $item['itemName'];
   $description = $item['itemDescription'];
@@ -108,18 +116,33 @@
   //       to determine if the user is already watching this item.
   //       For now, this is hardcoded.
   $has_session = true;
-  $watching = false;
 ?>
 
 
 <div class="container">
 
-  <div class="row mb-4"> <!-- Row #1 with auction image + details -->
-    <!-- Left column for image -->
-    <div class="col-sm-7 d-flex flex-column align-items-center"> 
-      <img src="<?php echo htmlspecialchars($photo); ?>" class="img-fluid mb-4" style="object-fit: contain; max-height: 300px;"> <!-- Added margin below the photo -->
-      <h2 class="text-center"><?php echo($title); ?></h2>
-    </div>
+<div class="row mb-4"> <!-- Row with auction image, details, and watchlist button -->
+  <!-- Left column for image -->
+  <div class="col-sm-7 d-flex flex-column align-items-center"> 
+    <img src="<?php echo htmlspecialchars($photo); ?>" class="img-fluid mb-4" style="object-fit: contain; max-height: 300px;">
+    <h2 class="text-center"><?php echo htmlspecialchars($title); ?></h2> <!-- Title -->
+  </div>
+
+  <!-- Right column for watchlist button and details -->
+  <div class="col-sm-5 align-self-center">
+    <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
+      <!-- Watchlist Button -->
+      <form method="POST" action="watchlist_funcs.php">
+        <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
+        <input type="hidden" name="userID" value="<?= $userID ?>">
+        <input type="hidden" name="itemID" value="<?= $itemID ?>">
+        <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger' : 'btn-secondary' ?>">
+          <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
+        </button>
+      </form>
+    <?php endif; ?>
+  </div>
+</div>
 
     <!-- Right column for watchlist, auction details, and bidding -->
     <div class="col-sm-5">
