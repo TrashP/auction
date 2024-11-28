@@ -116,7 +116,6 @@ if ($now < $end_time) {
 //       to determine if the user is already watching this item.
 //       For now, this is hardcoded.
 $has_session = true;
-$watching = false;
 ?>
 
 <div class="container">
@@ -141,84 +140,76 @@ $watching = false;
 
     <!-- Right column for watchlist, auction details, and bidding -->
     <div class="col-sm-5">
-      <?php if ($now > $end_time): ?>
-        <!-- Auction Ended Message -->
-        <div class="card p-3 text-center mb-3">
-          <h5 style="color: red;">Auction Ended</h5>
-          <p><strong>Ended On:</strong> <?php echo (date_format($end_time, 'j M H:i')) ?></p>
-        </div>
-      <?php else: ?>
+  <?php if ($now > $end_time): ?>
+    <!-- Auction Ended Message -->
+    <div class="card p-3 text-center mb-3">
+      <h5 style="color: red;">Auction Ended</h5>
+      <p><strong>Ended On:</strong> <?php echo (date_format($end_time, 'j M H:i')) ?></p>
+    </div>
+  <?php else: ?>
 
-        <!-- Watchlist Buttons -->
-        <div class="col-sm-4 align-self-center">
-            <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
-              <!-- Watchlist Button -->
-              <form method="POST" action="watchlist_funcs.php" >
-                  <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
-                  <input type="hidden" name="userID" value="<?= $userID ?>">
-                  <input type="hidden" name="itemID" value="<?= $itemID ?>">
-                  <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger' : 'btn-secondary'?>">
-                      <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
-                  </button>
-                </form>
-            <?php endif; ?>
-        </div>
-
-        <!-- Auction Details -->
-        <div class="card p-3 mb-3">
-          <h5>Auction Details</h5>
-          <p><strong>Auction End Date:</strong> <?php echo (date_format($end_time, 'j M H:i') . $time_remaining) ?></p>
-          <p class="lead"><strong>Current Highest Bid:</strong> £<?php echo (number_format($current_price, 2)) ?></p>
-        </div>
-
-        <!-- Proxy Bid Section -->
-        <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
-        <div class="card p-3 mb-3">
-          <h5>Your Proxy Bid</h5>
-          <form method="POST" action="update_proxy_bid.php?auctionID=<?= $auctionID ?>&userID=<?= $userID ?>">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text">£</span>
-              </div>
-              <input type="number" class="form-control" name="max_bid" id="max_bid" placeholder="Set your max proxy bid" required disabled>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="proxy_bid_checkbox" name="proxy_bid_enabled" onclick="toggleProxyBidInput()">
-              <label class="form-check-label" for="proxy_bid_checkbox">Enable Proxy Bid</label>
-            </div>
-            <button type="submit" class="btn btn-warning w-100" id="submit_proxy_bid" disabled>Set Proxy Bid</button>
-          </form>
-        </div>
-        <?php endif; ?>
-
-        <script>
-          // Enable/disable max bid input and submit button based on checkbox state
-          function toggleProxyBidInput() {
-            var isChecked = document.getElementById('proxy_bid_checkbox').checked;
-            document.getElementById('max_bid').disabled = !isChecked;
-            document.getElementById('submit_proxy_bid').disabled = !isChecked;
-          }
-        </script>
-
-        <!-- Place Your Bid -->
-        <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
-        <div class="card p-3" style="margin-top: -20px;"> <!-- Pulled upwards -->
-          <h5>Place Your Bid</h5>
-            <p class="lead"><strong>My Highest Bid:</strong> £<?php echo (number_format($max_user_bid, 2)) ?></p>
-            <form method="POST"
-              action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">£</span>
-                </div>
-                <input type="number" class="form-control" id="bid" name="bid" placeholder="Enter your bid" required>
-              </div>
-              <button type="submit" class="btn btn-primary w-100">Place Bid</button>
-            </form>
-          <?php endif; ?>
-        </div>
+    <!-- Auction Details -->
+    <div class="card p-3 mb-3">
+      <h5>Auction Details</h5>
+      <p><strong>Auction End Date:</strong> <?php echo (date_format($end_time, 'j M H:i') . $time_remaining) ?></p>
+      <p class="lead"><strong>Current Highest Bid:</strong> £<?php echo (number_format($current_price, 2)) ?></p>
+      <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
+        <form method="POST" action="watchlist_funcs.php">
+          <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
+          <input type="hidden" name="userID" value="<?= $userID ?>">
+          <input type="hidden" name="itemID" value="<?= $itemID ?>">
+          <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger w-100' : 'btn-secondary w-100' ?>">
+            <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
+          </button>
+        </form>
       <?php endif; ?>
     </div>
+
+    <!-- Watchlist Buttons -->
+    <div class="col-sm-4 align-self-center mb-3">
+      
+    </div>
+
+    <!-- Proxy Bid Section -->
+    <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+    <div class="card p-3 mb-3">
+      <h5>Your Proxy Bid</h5>
+      <form method="POST" action="update_proxy_bid.php?auctionID=<?= $auctionID ?>&userID=<?= $userID ?>">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">£</span>
+          </div>
+          <input type="number" class="form-control" name="max_bid" id="max_bid" placeholder="Set your max proxy bid" required disabled>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="proxy_bid_checkbox" name="proxy_bid_enabled" onclick="toggleProxyBidInput()">
+          <label class="form-check-label" for="proxy_bid_checkbox">Enable Proxy Bid</label>
+        </div>
+        <button type="submit" class="btn btn-warning w-100" id="submit_proxy_bid" disabled>Set Proxy Bid</button>
+      </form>
+    </div>
+    <?php endif; ?>
+
+    <!-- Place Your Bid -->
+    <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+    <div class="card p-3" style="margin-top: -20px;">
+      <h5>Place Your Bid</h5>
+      <p class="lead"><strong>My Highest Bid:</strong> £<?php echo (number_format($max_user_bid, 2)) ?></p>
+      <form method="POST" action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">£</span>
+          </div>
+          <input type="number" class="form-control" id="bid" name="bid" placeholder="Enter your bid" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Place Bid</button>
+      </form>
+    </div>
+    <?php endif; ?>
+
+  <?php endif; ?>
+</div>
+
     
     <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
   <div class="row"> <!-- Row #2 with auction description -->
