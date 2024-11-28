@@ -147,6 +147,21 @@ if ($mysqli->query($sql) === TRUE) {
         die("Error creating table: " . $mysqli->error);
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS ProxyBids
+        (
+        userID INT NOT NULL,
+        auctionID INT NOT NULL,
+        maxBidGBP INT NOT NULL,
+        currentBidGBP INT NOT NULL,
+        PRIMARY KEY (userID, auctionID)
+        )";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'ProxyBids' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
 // Add sample data to database
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
         VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
