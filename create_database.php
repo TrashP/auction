@@ -42,7 +42,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Items
         itemName VARCHAR(255) NOT NULL,
         itemDescription VARCHAR(255),
         category ENUM('Art and Collectibles', 'Electronics and Gadgets', 'Fashion and Accessories', 'Home and Garden', 'Automotive and Vehicles', 'Sports and Outdoors', 'Real Estate and Property', 'Books, Movies and Music', 'Toys and Games', 'Business and Industrial Equipment', 'Health and Beauty', 'Hobbies and Crafts', 'Pet Supplies', 'Industrial and Scientific', 'Charity and Fundraising', 'Others') NOT NULL,
-        itemPhotoPath VARCHAR(255)
+        itemPhotoPath VARCHAR(255) NOT NULL
         )";
 
 if ($mysqli->query($sql) === TRUE) {
