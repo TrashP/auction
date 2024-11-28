@@ -1,5 +1,6 @@
 <?php include_once("header.php") ?>
 <?php require("utilities.php") ?>
+<?php require_once("db_connection.php") ?>
 
 <div class="container">
 
@@ -22,10 +23,87 @@
   ?>
 
   <h2 class="my-3">My Reviews</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Item</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Seller') {
+        $userID = $_SESSION['userID'];
 
+        // SQL query to select the ratings and comments for this seller
+        $stmt = $conn->prepare("SELECT firstName, lastName, itemName, rating, comment
+                    FROM Auctions
+                    INNER JOIN Ratings USING (auctionID)
+                    INNER JOIN Items USING (itemID)
+                    INNER JOIN Users u1 ON Ratings.userID = u1.userID
+                    WHERE Auctions.userID = ?");
+
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $avgRating = 0;
+
+        while ($row = $result->fetch_assoc()) {
+          $avgRating += (int) $row['rating'];
+          echo "<tr>";
+          echo "<td>" . $row['firstName'] . "</td>";
+          echo "<td>" . $row['lastName'] . "</td>";
+          echo "<td>" . $row['itemName'] . "</td>";
+          echo "<td>" . $row['rating'] . "</td>";
+          echo "<td>" . $row['comment'] . "</td>";
+          echo "</tr>";
+        }
+
+        if ($result->num_rows == 0) {
+          $avgRating = "N/A";
+        } else {
+          $avgRating /= $result->num_rows;
+        }
+      }
+
+      ?>
+    </tbody>
+  </table>
+  <h3 class="my-3">Average Rating: <?php echo $avgRating ?></h3>
+
+  <h2 class="my-3">My Sold Items</h2>
   <?php
   if (isset($_SESSION['userID']) && $_SESSION['account_type'] == 'Seller') {
-    // SQL query to select the ratings and comments for this seller
+    $userID = $_SESSION['userID'];
+
+    // SQL query to select Auctions sold by this seller
+    $sql = "SELECT DISTINCT
+                Items.itemID, 
+                itemName, 
+                itemDescription, 
+                MAX(Bids.bidAmountGBP) AS currentPrice, 
+                a1.auctionID,
+                a1.reservePriceGBP
+            FROM Auctions a1
+            INNER JOIN Items USING (itemID)
+            INNER JOIN Bids ON a1.auctionID = Bids.auctionID
+            WHERE a1.userID = $userID AND auctionDate < NOW()
+            GROUP BY Items.itemID, itemName, itemDescription, a1.auctionID, a1.reservePriceGBP
+            HAVING currentPrice >= reservePriceGBP";
+  }
+  $resultrec = $conn->query($sql);
+  if ($resultrec === false) {
+    // Output error message
+    echo "Error in query: " . $conn->error;
+  } else {
+    // Output data for each row
+    while ($row = $resultrec->fetch_assoc()) {
+      print_listing_seller($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['auctionID']);
+    }
   }
 
   ?>

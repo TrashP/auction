@@ -20,7 +20,7 @@
 /* TODO #2: Extract form data into variables. If there is an
             issue, give some semi-helpful feedback to user. */
             
-            print_r($_GET);
+            //print_r($_GET);
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $userID = $_SESSION['userID'] ?? 0;
                 $auctionID = $_GET['auctionID'] ?? 0;
@@ -99,6 +99,23 @@
             //make query
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
+
+            //update highest bidder id if necessary
+            if ($bidAmountGBP > $maxUserBid) {
+                $updateAuctionQuery = "UPDATE Auctions SET highestBidderID = ? WHERE auctionID = ?";
+                $result = $conn->prepare($updateAuctionQuery);
+            
+                if (!$result) {die("Prepare failed: " . $conn->error);}
+            
+                $result->bind_param("ii", $userID, $auctionID);
+            
+                if ($result->execute()) {
+                    echo "Auction table updated with new highest bidder.<br>";
+                } else {
+                    die("Error updating auction: " . $result->error);
+                }
+            }
+
       
 
             
