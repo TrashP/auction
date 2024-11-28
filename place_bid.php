@@ -13,6 +13,7 @@
             if (session_status() === PHP_SESSION_NONE) {
                 session_start(); // Start the session only if it hasn't been started already
             }
+            require 'email_functions.php';
 
             //check if logged in???
 
@@ -153,6 +154,64 @@
                     </div>';
             }
 
+            
+            // Notify users watching the item
+            $watchlistQuery = "
+            SELECT u.email, u.firstName
+            FROM Watchlist w
+            JOIN Users u ON w.userID = u.userID
+            WHERE w.auctionID = ? AND w.watching = TRUE
+            ";
+            $watchlistStmt = $conn->prepare($watchlistQuery);
+            $watchlistStmt->bind_param("i", $auctionID);
+            $watchlistStmt->execute();
+            $watchlistResult = $watchlistStmt->get_result();
+
+            // Fetch auction details
+            $auctionDetailsQuery = "
+            SELECT a.startPriceGBP, a.highestBidderID, i.itemName
+            FROM Auctions a
+            JOIN Items i ON a.itemID = i.itemID
+            WHERE a.auctionID = ?
+            ";
+            $auctionDetailsStmt = $conn->prepare($auctionDetailsQuery);
+            $auctionDetailsStmt->bind_param("i", $auctionID);
+            $auctionDetailsStmt->execute();
+            $auctionDetails = $auctionDetailsStmt->get_result()->fetch_assoc();
+
+            $itemName = $auctionDetails['itemName'];
+            $currentPrice = $bidAmountGBP;
+
+            while ($watcher = $watchlistResult->fetch_assoc()) {
+            $watcherEmail = $watcher['email'];
+            $watcherName = $watcher['firstName'];
+
+            $subject = "New Bid Placed on Item: $itemName";
+            $message = "
+                Dear $watcherName,
+
+                A new bid has been placed on the item you're watching: $itemName.
+
+                Current highest bid: £$currentPrice.
+
+                Visit the auction to view details or place your bid.
+
+                Best regards,
+                Auction System
+            ";
+
+            sendEmail($watcherName, $watcherEmail, $subject, $message);
+            }
+
+            // Success message
+            echo '<div class="alert alert-success mt-3" role="alert">
+                <h2>Bid Successfully Submitted</h2>
+                <p><strong>Bid Amount:</strong> £' . number_format(htmlspecialchars($bidAmountGBP), 2) . '</p>
+            </div>';
+
+            $watchlistStmt->close();
+            $auctionDetailsStmt->close();
+            $conn->close();
 ?>
 
 <?php include_once("footer.php")?>
