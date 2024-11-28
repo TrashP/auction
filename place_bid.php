@@ -87,6 +87,23 @@
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
 
+
+            //update highest bidder id if necessary
+            if ($bidAmountGBP > $maxUserBid) {
+                $updateAuctionQuery = "UPDATE Auctions SET highestBidderID = ? WHERE auctionID = ?";
+                $result = $conn->prepare($updateAuctionQuery);
+            
+                if (!$result) {die("Prepare failed: " . $conn->error);}
+            
+                $result->bind_param("ii", $userID, $auctionID);
+            
+                if ($result->execute()) {
+                    echo "Auction table updated with new highest bidder.<br>";
+                } else {
+                    die("Error updating auction: " . $result->error);
+                }
+            }
+
             // Check the current highest bid
             $currentPriceQuery = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
             $currentPriceResult = $conn->query($currentPriceQuery);

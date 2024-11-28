@@ -4,6 +4,7 @@
 <?php
 
 require 'db_connection.php';
+date_default_timezone_set('Europe/London');
 if (session_status() === PHP_SESSION_NONE) {
   session_start(); // Start the session only if it hasn't been started already
 }
@@ -103,6 +104,7 @@ if (empty($end_time)) {
 //       to lack of high-enough bids. Or maybe not.
 
 // Calculate time to auction end:
+
 $now = new DateTime();
 
 if ($now < $end_time) {
@@ -114,6 +116,7 @@ if ($now < $end_time) {
 //       to determine if the user is already watching this item.
 //       For now, this is hardcoded.
 $has_session = true;
+$watching = false;
 ?>
 
 <div class="container">

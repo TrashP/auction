@@ -9,7 +9,7 @@
                                 FROM Users
                                 INNER JOIN Points USING (userID)
                                 GROUP BY firstName, lastName
-                                ORDER BY pts
+                                ORDER BY pts DESC
   ");
 
 
