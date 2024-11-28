@@ -56,7 +56,7 @@ $watchResult = $watchStmt->get_result();
 $watching = $watchResult->num_rows > 0 ? $watchResult->fetch_assoc()['watching'] : false;
 
 // DELETEME: For now, using placeholder data.
-$title = $item['itemName'];
+$title = strtoupper($item['itemName']);
 $description = $item['itemDescription'];
 $photo = $item['itemPhotoPath'];
 $start_price = $auction['startPriceGBP'];
@@ -116,16 +116,25 @@ if ($now < $end_time) {
 $has_session = true;
 ?>
 
-
 <div class="container">
 
   <div class="row mb-4"> <!-- Row #1 with auction image + details -->
     <!-- Left column for image -->
     <div class="col-sm-7 d-flex flex-column align-items-center">
-      <img src="<?php echo htmlspecialchars($photo); ?>" class="img-fluid mb-4"
-        style="object-fit: contain; max-height: 300px;"> <!-- Added margin below the photo -->
-      <h2 class="text-center"><?php echo ($title); ?></h2>
+  <!-- Grey background only around the photo -->
+  <div style="background-color: #f0f0f0; width: 100%; text-align: center;">
+    <div style="display: inline-block; width: 100%; max-width: 700px; background-color: #f0f0f0;">
+      <img src="<?php echo htmlspecialchars($photo); ?>" 
+           alt="Auction Image" 
+           style="width: 100%; max-height: 300px; object-fit: contain">
     </div>
+  </div>
+  
+  <!-- Title with underline matching the image width -->
+  <h2 class="text-center mt-3" style="width: 100%; max-width: 700px; border-bottom: 2px solid black; padding-bottom: 10px; display: inline-block;">
+      <?php echo strtoupper($title); ?>
+    </h2>
+  </div>
 
     <!-- Right column for watchlist, auction details, and bidding -->
     <div class="col-sm-5">
@@ -136,6 +145,7 @@ $has_session = true;
           <p><strong>Ended On:</strong> <?php echo (date_format($end_time, 'j M H:i')) ?></p>
         </div>
       <?php else: ?>
+
         <!-- Watchlist Buttons -->
         <div class="mb-3"> <!-- Added margin for spacing -->
           <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
@@ -160,10 +170,39 @@ $has_session = true;
           <p class="lead"><strong>Current Highest Bid:</strong> £<?php echo (number_format($current_price, 2)) ?></p>
         </div>
 
+        <!-- Proxy Bid Section -->
+        <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+        <div class="card p-3 mb-3">
+          <h5>Your Proxy Bid</h5>
+          <form method="POST" action="update_proxy_bid.php?auctionID=<?= $auctionID ?>&userID=<?= $userID ?>">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">£</span>
+              </div>
+              <input type="number" class="form-control" name="max_bid" id="max_bid" placeholder="Set your max proxy bid" required disabled>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="proxy_bid_checkbox" name="proxy_bid_enabled" onclick="toggleProxyBidInput()">
+              <label class="form-check-label" for="proxy_bid_checkbox">Enable Proxy Bid</label>
+            </div>
+            <button type="submit" class="btn btn-warning w-100" id="submit_proxy_bid" disabled>Set Proxy Bid</button>
+          </form>
+        </div>
+        <?php endif; ?>
+
+        <script>
+          // Enable/disable max bid input and submit button based on checkbox state
+          function toggleProxyBidInput() {
+            var isChecked = document.getElementById('proxy_bid_checkbox').checked;
+            document.getElementById('max_bid').disabled = !isChecked;
+            document.getElementById('submit_proxy_bid').disabled = !isChecked;
+          }
+        </script>
+
         <!-- Place Your Bid -->
+        <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
         <div class="card p-3" style="margin-top: -20px;"> <!-- Pulled upwards -->
           <h5>Place Your Bid</h5>
-          <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
             <p class="lead"><strong>My Highest Bid:</strong> £<?php echo (number_format($max_user_bid, 2)) ?></p>
             <form method="POST"
               action="place_bid.php?itemID=<?= $itemID ?>&auctionID=<?= $auctionID ?>&maxUserBid=<?= $max_user_bid ?>">
@@ -179,19 +218,39 @@ $has_session = true;
         </div>
       <?php endif; ?>
     </div>
-
-    <div class="row"> <!-- Row #2 with auction description -->
-      <div class="col-sm-12">
-        <h5><strong>Description</strong></h5> <!-- Added Description header -->
-        <div class="itemDescription">
-          <?php echo ($description); ?>
-        </div>
+    
+    <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+  <div class="row"> <!-- Row #2 with auction description -->
+    <div class="col-sm-12">
+      <h5 style="margin-top: -200px;"><strong>DESCRIPTION</strong></h5> <!-- Moved header upwards -->
+      <div class="itemDescription">
+        <?php echo ($description); ?>
       </div>
     </div>
-
   </div> <!-- End of right col with bidding info -->
+<?php else: ?>
+  <div class="row"> <!-- Row #2 with auction description -->
+    <div class="col-sm-12">
+      <h5><strong>DESCRIPTION</strong></h5> <!-- Normal position for non-Sellers -->
+      <div class="itemDescription">
+        <?php echo ($description); ?>
+      </div>
+    </div>
+  </div> <!-- End of right col with bidding info -->
+<?php endif; ?>
 
-</div> <!-- End of row #2 -->
+
+
+<?php 
+  //TOOO 4:
+  // create a Proxy Bidding - Enable users to set a maximum bid amount and let the system bid incrementally on their behalf until the maximum is reached.
+  // Backend Implementation:
+  // Add a backend process to check and auto-bid when outbid, up to the user’s maximum amount.
+  // Database Usage:
+  // Add a ProxyBids table: userID(buyer), auctionID,  maxBid, currentBid. [DONE]
+
+
+?>
 
 
 
