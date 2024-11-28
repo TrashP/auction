@@ -161,6 +161,52 @@ if ($mysqli->query($sql) === TRUE) {
         die("Error creating table: " . $mysqli->error);
 }
 
+
+
+// CHATROOM SQL
+
+$sql = "CREATE TABLE IF NOT EXISTS ChatRoom (
+    chatroom_id INT AUTO_INCREMENT PRIMARY KEY,
+    buyer_id INT NOT NULL,
+    seller_id INT NOT NULL,
+    chatroom_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (buyer_id) REFERENCES Users(userID) ON DELETE CASCADE,
+    FOREIGN KEY (seller_id) REFERENCES Users(userID) ON DELETE CASCADE)";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'ChatRoom' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
+
+
+
+//Message SQL
+$sql = "CREATE TABLE IF NOT EXISTS Messages (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    chatroom_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    recipient_id INT NOT NULL,
+    message_text TEXT NOT NULL,
+    sent_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (chatroom_id) REFERENCES Chatroom(chatroom_id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES Users(userID) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES Users(userID) ON DELETE CASCADE)";
+
+if ($mysqli->query($sql) === TRUE) {
+        echo "Table 'Messages' created successfully.<br>";
+} else {
+        die("Error creating table: " . $mysqli->error);
+}
+
+
+
+
+
+
+
+
 // Add sample data to database
 $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
         VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
