@@ -26,7 +26,23 @@ if ($currentPriceResult->num_rows === 0) {
     echo "Error: Auction not found.";
     exit();
 }
-$currentPrice = $currentPriceResult->fetch_assoc()['currentPriceGBP'];
+$currentBid = $currentPriceResult->fetch_assoc()['currentPriceGBP'];
+
+$startPriceQuery = "SELECT startPriceGBP from Auctions WHERE auctionID = '$auctionID'";
+$startPriceResult = $conn->query($startPriceQuery);
+if ($startPriceResult->num_rows === 0) {
+    echo "Error: Auction not found.";
+    exit();
+}
+$startPrice = $startPriceResult->fetch_assoc()['startPriceGBP'];
+
+$currentPrice = 0;
+
+if ($startPrice > $currentBid) {
+    $currentPrice = $startPrice;
+} else {
+    $currentPrice = $currentBid;
+}
 
 // Get the current proxy bid ceiling for this user (if it exists)
 $currentProxyBidQuery = "SELECT maxBidGBP FROM ProxyBids WHERE userID = '$userID' AND auctionID = '$auctionID'";
@@ -36,8 +52,8 @@ $currentProxyBid = $currentProxyBidResult->num_rows > 0 ? $currentProxyBidResult
 // Check if the new maximum bid is valid
 if ($maxBid > $currentPrice && $maxBid > $currentProxyBid) {
     // Insert or update the proxy bid in the ProxyBids table
-    $insertQuery = "INSERT INTO ProxyBids (userID, auctionID, maxBidGBP, currentBidGBP) 
-                    VALUES ('$userID', '$auctionID', '$maxBid', '$currentPrice') 
+    $insertQuery = "INSERT INTO ProxyBids (userID, auctionID, maxBidGBP) 
+                    VALUES ('$userID', '$auctionID', '$maxBid') 
                     ON DUPLICATE KEY UPDATE maxBidGBP = '$maxBid'";
 
   if ($conn->query($insertQuery) === TRUE) {
