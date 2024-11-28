@@ -147,20 +147,18 @@ $has_session = true;
       <?php else: ?>
 
         <!-- Watchlist Buttons -->
-        <div class="mb-3"> <!-- Added margin for spacing -->
-          <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
-            <div id="watch_nowatch" <?php if ($has_session && $watching)
-              echo ('style="display: none"'); ?>>
-              <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="addToWatchlist()">+ Add to
-                watchlist</button>
-            </div>
-            <div id="watch_watching" <?php if (!$has_session || !$watching)
-              echo ('style="display: none"'); ?>>
-              <button type="button" class="btn btn-success btn-sm w-100 mb-1" disabled>Watching</button>
-              <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeFromWatchlist()">Remove
-                watch</button>
-            </div>
-          <?php endif; ?>
+        <div class="col-sm-4 align-self-center">
+            <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
+              <!-- Watchlist Button -->
+              <form method="POST" action="watchlist_funcs.php" >
+                  <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
+                  <input type="hidden" name="userID" value="<?= $userID ?>">
+                  <input type="hidden" name="itemID" value="<?= $itemID ?>">
+                  <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger' : 'btn-secondary'?>">
+                      <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
+                  </button>
+                </form>
+            <?php endif; ?>
         </div>
 
         <!-- Auction Details -->
