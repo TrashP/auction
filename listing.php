@@ -220,7 +220,7 @@ $watching = false;
       <?php endif; ?>
     </div>
     
-    <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+    <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
   <div class="row"> <!-- Row #2 with auction description -->
     <div class="col-sm-12">
       <h5 style="margin-top: -200px;"><strong>DESCRIPTION</strong></h5> <!-- Moved header upwards -->
