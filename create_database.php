@@ -174,9 +174,10 @@ $sql = "CREATE TABLE IF NOT EXISTS Messages (
         auction_id INT NOT NULL,
         buyer_id INT NOT NULL,
         seller_id INT NOT NULL,
-        buyer_text TEXT NOT NULL,
+        buyer_message TEXT NOT NULL,
         seller_message TEXT DEFAULT NULL,
-        sent_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sent_date_buyer DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sent_date_seller DATETIME DEFAULT NULL,
         FOREIGN KEY (auction_id) REFERENCES Auctions(auctionID) ON DELETE CASCADE,
         FOREIGN KEY (buyer_id) REFERENCES Users(userID) ON DELETE CASCADE,
         FOREIGN KEY (seller_id) REFERENCES Users(userID) ON DELETE CASCADE)";
