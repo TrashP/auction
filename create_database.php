@@ -165,34 +165,23 @@ if ($mysqli->query($sql) === TRUE) {
 
 // CHATROOM SQL
 
-$sql = "CREATE TABLE IF NOT EXISTS ChatRoom (
-    chatroom_id INT AUTO_INCREMENT PRIMARY KEY,
-    buyer_id INT NOT NULL,
-    seller_id INT NOT NULL,
-    chatroom_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (buyer_id) REFERENCES Users(userID) ON DELETE CASCADE,
-    FOREIGN KEY (seller_id) REFERENCES Users(userID) ON DELETE CASCADE)";
-
-if ($mysqli->query($sql) === TRUE) {
-        echo "Table 'ChatRoom' created successfully.<br>";
-} else {
-        die("Error creating table: " . $mysqli->error);
-}
-
 
 
 
 //Message SQL
 $sql = "CREATE TABLE IF NOT EXISTS Messages (
-    message_id INT AUTO_INCREMENT PRIMARY KEY,
-    chatroom_id INT NOT NULL,
-    sender_id INT NOT NULL,
-    recipient_id INT NOT NULL,
-    message_text TEXT NOT NULL,
-    sent_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (chatroom_id) REFERENCES Chatroom(chatroom_id) ON DELETE CASCADE,
-    FOREIGN KEY (sender_id) REFERENCES Users(userID) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES Users(userID) ON DELETE CASCADE)";
+        message_id INT AUTO_INCREMENT PRIMARY KEY,
+        auction_id INT NOT NULL,
+        buyer_id INT NOT NULL,
+        seller_id INT NOT NULL,
+        buyer_text TEXT NOT NULL,
+        seller_message TEXT DEFAULT NULL,
+        sent_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (auction_id) REFERENCES Auctions(auctionID) ON DELETE CASCADE,
+        FOREIGN KEY (buyer_id) REFERENCES Users(userID) ON DELETE CASCADE,
+        FOREIGN KEY (seller_id) REFERENCES Users(userID) ON DELETE CASCADE)";
+    
+    
 
 if ($mysqli->query($sql) === TRUE) {
         echo "Table 'Messages' created successfully.<br>";
