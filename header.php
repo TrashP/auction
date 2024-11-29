@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Europe/London');
 ?>
 
 
@@ -49,6 +50,9 @@ session_start();
         echo ('
         <li class="nav-item mx-1">
           <a class="nav-link" href="mybids.php">My Bids</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link" href="my_purchases.php">My Purchases</a>
         </li>
         <li class="nav-item mx-1">
           <a class="nav-link" href="recommendations.php">Recommended</a>
