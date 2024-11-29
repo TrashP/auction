@@ -111,6 +111,7 @@
               <th scope="col">Quantity</th>
               <th scope="col">Current Highest Bid (£)</th>
               <th scope="col">Time Till End</th>
+              <th scope="col">Link to Q&A</th>
             </tr>
           </thead>
           <tbody>
@@ -141,7 +142,7 @@
       
                 echo "<td><span class='countdown' data-time='$timeDiff'></span></td>";
               }
-
+              echo "<td><a href='forum.php?auctionID=" . $data['auctionID'] . "&itemName=" . $data['itemName'] . "'>Forum Link</a></td>";
               echo "</tr>";
             }
             ?>

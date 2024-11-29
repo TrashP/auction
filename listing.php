@@ -177,7 +177,7 @@ $has_session = true;
         </form>
       <?php endif; ?>
 
-      <a href="forum.php?auctionID=<?php echo $auctionID; ?>&itemName=<?php echo $title; ?>" name="clicked_forum" class="btn btn-secondary w-100" style="margin-top: 5px;">Q&A Forum</a>
+      <a href="forum.php?auctionID=<?php echo $auctionID; ?>&itemName=<?php echo $item['itemName']; ?>" name="clicked_forum" class="btn btn-secondary w-100" style="margin-top: 5px;">Q&A Forum</a>
 
     </div>
 

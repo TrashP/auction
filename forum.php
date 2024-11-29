@@ -77,7 +77,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q&A Forum</title>
+    <title>Q&A Forum </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .buyer-message {
@@ -101,7 +101,8 @@
 <body>
 
 <div class="container mt-5">
-    <h2>Q&A Forum</h2>
+    <h2><?php echo ucwords(htmlspecialchars($item_name)); ?> Q&A Forum</h2>
+
     <hr>
 
     <?php if ($user_role === 'Buyer'): ?>

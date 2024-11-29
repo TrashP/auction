@@ -99,7 +99,7 @@
                 $result->bind_param("ii", $userID, $auctionID);
             
                 if ($result->execute()) {
-                    echo "Auction table updated with new highest bidder.<br>";
+                    // echo "Auction table updated with new highest bidder.<br>";
                 } else {
                     die("Error updating auction: " . $result->error);
                 }
@@ -200,11 +200,7 @@
             sendEmail($watcherName, $watcherEmail, $subject, $message);
             }
 
-            // Success message
-            echo '<div class="alert alert-success mt-3" role="alert">
-                <h2>Bid Successfully Submitted</h2>
-                <p><strong>Bid Amount:</strong> £' . number_format(htmlspecialchars($bidAmountGBP), 2) . '</p>
-            </div>';
+
 
             $watchlistStmt->close();
             $auctionDetailsStmt->close();
