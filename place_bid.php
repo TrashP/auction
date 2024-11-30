@@ -138,7 +138,7 @@
                 $proxyBid = $proxyResult->fetch_assoc();
                 $proxyUserID = $proxyBid['userID'];
                 $proxyMaxBid = $proxyBid['maxBidGBP'];
-                $proxyBidAmount = min($proxyMaxBid, $currentPrice + 1);
+                $proxyBidAmount = min($proxyMaxBid, $currentPrice2 + 1);
         
                 $proxyInsertQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ('$proxyUserID', '$auctionID', '$proxyBidAmount')";
                 $placeProxyBidResult = $conn->query($proxyInsertQuery);
