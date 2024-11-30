@@ -1,6 +1,9 @@
 <?php include_once("header.php") ?>
 <?php require("utilities.php") ?>
-
+<?php
+ini_set('display_errors', 0); // Disable error display
+error_reporting(E_ERROR | E_PARSE); // Show only errors and parse errors
+?>
 <div class="container">
 
   <h2 class="my-3">Browse listings</h2>
@@ -16,7 +19,7 @@
       $userCategory = '';
       $userSort = '';
 
-      if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      if ($_SERVER['REQUEST_METHOD'] =='GET') {
         $userSearch = htmlspecialchars($_GET['keyword']);
         $userCategory = htmlspecialchars($_GET['cat']);
         $userSort = htmlspecialchars($_GET['order_by']);
@@ -261,6 +264,7 @@ $max_page = ceil($num_results / $results_per_page);
       $res = $results_per_page;
       echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
+        // var_dump($row);
         if ($skip == 0 and $res != 0) {
 
 

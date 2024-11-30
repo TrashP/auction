@@ -22,10 +22,6 @@ $sql = "SELECT a.auctionID, a.userID AS ownerID, a.highestBidderID,
         LEFT JOIN Users u2 ON a.highestBidderID = u2.userID
         WHERE a.auctionDate <= NOW() AND a.processed = FALSE";
 
-
-
-
-
 $result = $conn->query($sql);
 
 if (!$result) {
@@ -58,6 +54,34 @@ if ($result->num_rows > 0) {
             echo "sent email to highest bidder";
             sendEmail($bidderName, $bidderEmail, $subjectBidder, $messageBidder);
         }
+
+        // Notify users watching the auction
+        $watchlistQuery = "
+            SELECT u.email, u.firstName
+            FROM Watchlist w
+            JOIN Users u ON w.userID = u.userID
+            WHERE w.auctionID = ? AND w.watching = TRUE
+        ";
+        $watchlistStmt = $conn->prepare($watchlistQuery);
+        $watchlistStmt->bind_param("i", $auctionID);
+        $watchlistStmt->execute();
+        $watchlistResult = $watchlistStmt->get_result();
+
+        while ($watcher = $watchlistResult->fetch_assoc()) {
+            $watcherEmail = $watcher['email'];
+            $watcherName = $watcher['firstName'];
+
+            $subjectWatcher = "Auction #$auctionID Has Ended";
+            $messageWatcher = "Dear $watcherName,\n\nThe auction (ID: $auctionID, Item: $itemName) you were watching has ended. Thank you for your interest in this auction.";
+            sendEmail($watcherName, $watcherEmail, $subjectWatcher, $messageWatcher);
+        }
+
+        // Update Watchlist to set 'watching' to 0 for this auction
+        $updateWatchlistQuery = "UPDATE Watchlist SET watching = FALSE WHERE auctionID = ?";
+        $updateWatchlistStmt = $conn->prepare($updateWatchlistQuery);
+        $updateWatchlistStmt->bind_param("i", $auctionID);
+        $updateWatchlistStmt->execute();
+        $updateWatchlistStmt->close();
 
         // Mark the auction as processed
         $updateSql = "UPDATE Auctions SET processed = TRUE WHERE auctionID = ?";

@@ -8,6 +8,12 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start(); // Start the session only if it hasn't been started already
 }
 
+// Ensure user is logged in
+if (!isset($_SESSION['userID'])) {
+  header("Location: register.php"); // Redirect to login page if not logged in
+  exit();
+}
+
 // Get info from the URL:
 $itemID = $_GET['itemID'];
 $auctionID = $_GET['auctionID'];
@@ -202,6 +208,7 @@ $has_session = true;
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="proxy_bid_checkbox" name="proxy_bid_enabled" onclick="toggleProxyBidInput()">
           <label class="form-check-label" for="proxy_bid_checkbox">Enable Proxy Bid</label>
+
         </div>
         <button type="submit" class="btn btn-warning w-100" id="submit_proxy_bid" disabled>Set Proxy Bid</button>
       </form>
@@ -229,6 +236,7 @@ $has_session = true;
           </div>
           <input type="number" class="form-control" id="bid" name="bid" placeholder="Enter your bid" required>
         </div>
+
         <button type="submit" class="btn btn-primary w-100">Place Bid</button>
       </form>
     </div>
