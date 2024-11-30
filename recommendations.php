@@ -32,7 +32,12 @@
                 GREATEST(a1.startPriceGBP, IFNULL(MAX(Bids.bidAmountGBP), 0)) AS currentPrice, 
                 COUNT(Bids.userID) AS numBids,
                 a1.auctionID,
-                a1.auctionDate
+                a1.auctionDate,
+                (SELECT AVG(rating)
+                 FROM Auctions a2
+                 LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+                 WHERE a1.userID = a2.userID
+                 GROUP BY a2.userID) AS avgRating
             FROM Auctions a1
             INNER JOIN Items USING (itemID)
             INNER JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -60,7 +65,16 @@
     } else {
       // Output data for each row
       while ($row = $resultrec->fetch_assoc()) {
-        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID']);
+        print_listing_li(
+          $row['itemID'],
+          $row['itemName'],
+          $row['itemDescription'],
+          $row['currentPrice'],
+          $row['numBids'],
+          new DateTime($row['auctionDate']),
+          $row['auctionID'],
+          (int) $row['avgRating']
+        );
       }
     }
 
@@ -74,7 +88,12 @@
           GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
           COUNT(Bids.userID) AS numBids,
           a1.auctionID,
-          auctionDate
+          auctionDate,
+          (SELECT AVG(rating)
+           FROM Auctions a2
+           LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+           WHERE a1.userID = a2.userID
+           GROUP BY a2.userID) AS avgRating
         FROM Auctions a1
         INNER JOIN Items USING (itemID)
         LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -101,7 +120,16 @@
     } else {
       // Output data for each row
       while ($row = $resultrec->fetch_assoc()) {
-        print_listing_li($row['itemID'], $row['itemName'], $row['itemDescription'], $row['currentPrice'], $row['numBids'], $row['auctionDate'], $row['auctionID']);
+        print_listing_li(
+          $row['itemID'],
+          $row['itemName'],
+          $row['itemDescription'],
+          $row['currentPrice'],
+          $row['numBids'],
+          new DateTime($row['auctionDate']),
+          $row['auctionID'],
+          (int) $row['avgRating']
+        );
       }
     }
   }
