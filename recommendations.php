@@ -25,35 +25,6 @@
     $userID = $_SESSION['userID'];
     echo "<h5>Items that people similar to you are bidding on:</h5>";
 
-    // $sql = "SELECT DISTINCT
-    //     Bids.userID,
-    //     Items.itemID, 
-    //     itemName, 
-    //     itemDescription, 
-    //     GREATEST(startPriceGBP, IFNULL(MAX(bidAmountGBP), 0)) AS currentPrice, 
-    //     COUNT(Bids.userID) AS numBids,
-    //     a1.auctionID,
-    //     auctionDate
-    //     FROM Auctions a1
-    //     INNER JOIN Items USING (itemID)
-    //     INNER JOIN Bids ON a1.auctionID = Bids.auctionID
-    //     WHERE Bids.userID IN 
-    //         (SELECT b1.userID
-    //         FROM Bids b1
-    //         INNER JOIN Bids b2 
-    //             ON b1.auctionID = b2.auctionID 
-    //             AND b1.userID != b2.userID 
-    //             AND b2.userID = $userID
-    //         WHERE b1.userID != $userID 
-    //             AND NOT EXISTS (
-    //                 SELECT 1
-    //                 FROM Bids b2
-    //                 WHERE b2.userID = $userID
-    //                 AND b2.auctionID = a1.auctionID
-    //               )
-    //       ) 
-    //     GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate;";
-  
     $sql = "SELECT DISTINCT
                 Items.itemID, 
                 itemName, 

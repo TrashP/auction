@@ -134,7 +134,11 @@ $sql = "SELECT
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
     auctionDate,
-    AVG(rating) AS avgRating
+    (SELECT AVG(rating)
+    FROM Auctions a2
+    LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+    WHERE a1.userID = a2.userID
+    GROUP BY a2.userID) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -153,7 +157,11 @@ if ($keyword !== null and $keyword !== '') {
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
     auctionDate,
-    AVG(rating) AS avgRating
+    (SELECT AVG(rating)
+    FROM Auctions a2
+    LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+    WHERE a1.userID = a2.userID
+    GROUP BY a2.userID) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -172,7 +180,11 @@ if ($category !== null and $category !== 'all') {
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
     auctionDate,
-    AVG(rating) AS avgRating
+    (SELECT AVG(rating)
+    FROM Auctions a2
+    LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+    WHERE a1.userID = a2.userID
+    GROUP BY a2.userID) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -191,7 +203,11 @@ if ($category !== null and $category !== 'all' and $keyword !== null and $keywor
     COUNT(Bids.userID) AS numBids,
     a1.auctionID,
     auctionDate,
-    AVG(rating) AS avgRating
+    (SELECT AVG(rating)
+    FROM Auctions a2
+    LEFT JOIN Ratings ON a2.auctionID = Ratings.auctionID
+    WHERE a1.userID = a2.userID
+    GROUP BY a2.userID) AS avgRating
 FROM Auctions a1
 INNER JOIN Items USING (itemID)
 LEFT JOIN Bids ON a1.auctionID = Bids.auctionID
@@ -248,6 +264,7 @@ $max_page = ceil($num_results / $results_per_page);
       $res = $results_per_page;
       echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
+        // var_dump($row);
         if ($skip == 0 and $res != 0) {
 
 

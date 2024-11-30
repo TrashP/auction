@@ -2,7 +2,6 @@
 <?php require("utilities.php") ?>
 
 <?php
-
 require 'db_connection.php';
 date_default_timezone_set('Europe/London');
 if (session_status() === PHP_SESSION_NONE) {
@@ -63,7 +62,7 @@ $photo = $item['itemPhotoPath'];
 $start_price = $auction['startPriceGBP'];
 $current_price = $bids['currentPrice'];
 $max_user_bid = $bids['maxUserBid'];
-$num_bids = $bids['numBids'];
+$num_bids = $bids['numBids'] ;
 $end_time = new DateTime($auction['auctionDate']);
 
 $errors = [];
@@ -97,6 +96,19 @@ if (empty($num_bids)) {
 if (empty($end_time)) {
   $errors[] = "Something went wrong... Could not get auction end time.";
 }
+
+
+// if (!empty($errors)) {
+//   // Display errors
+//   echo '<div class="alert alert-danger"><ul>';
+//   foreach ($errors as $error) {
+//     echo "<li>$error</li>";
+//   }
+//   $browseLink = "browse.php";
+//   echo '<div class="text-center"><a href="' . $browseLink . '">Go back to the browse page.</a></div>';
+//   mysqli_close($conn);
+//   exit();
+// }
 
 
 // TODO: Note: Auctions that have ended may pull a different set of data,
@@ -146,6 +158,8 @@ $has_session = true;
       <h5 style="color: red;">Auction Ended</h5>
       <p><strong>Ended On:</strong> <?php echo (date_format($end_time, 'j M H:i')) ?></p>
     </div>
+    
+    <a href="forum.php?auctionID=<?php echo $auctionID; ?>&itemName=<?php echo $item['itemName']; ?>" name="clicked_forum" class="btn btn-secondary w-100" style="margin-top: 5px;">Q&A Forum</a>
   <?php else: ?>
 
     <!-- Auction Details -->
@@ -161,8 +175,12 @@ $has_session = true;
           <button type="submit" name="toggle_watchlist" class="btn <?= $watching ? 'btn-danger w-100' : 'btn-secondary w-100' ?>">
             <?= $watching ? "Remove from Watchlist" : "Add to Watchlist"; ?>
           </button>
+
         </form>
       <?php endif; ?>
+
+      <a href="forum.php?auctionID=<?php echo $auctionID; ?>&itemName=<?php echo $item['itemName']; ?>" name="clicked_forum" class="btn btn-secondary w-100" style="margin-top: 5px;">Q&A Forum</a>
+
     </div>
 
     <!-- Watchlist Buttons -->
@@ -211,7 +229,7 @@ $has_session = true;
 </div>
 
     
-    <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
+    <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
   <div class="row"> <!-- Row #2 with auction description -->
     <div class="col-sm-12">
       <h5 style="margin-top: -200px;"><strong>DESCRIPTION</strong></h5> <!-- Moved header upwards -->
