@@ -264,6 +264,7 @@ $max_page = ceil($num_results / $results_per_page);
       $res = $results_per_page;
       echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
+        // var_dump($row);
         if ($skip == 0 and $res != 0) {
 
 

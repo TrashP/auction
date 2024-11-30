@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result) {
         echo '<div class="alert alert-success">Your question has been posted successfully.</div>';
+        header("Location: forum.php?auctionID=" . urlencode($auction_id) . "&itemName=" . urlencode($item_name));
         // Redirect back to the forum page
 
     } else {
