@@ -216,14 +216,20 @@ WHERE Items.category = '$category' AND itemName LIKE '%$keyword%'
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
+$sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,";
+
 if ($ordering == "pricelow") {
-  $sql .= " ORDER BY currentPrice ASC";
+  $sql .= " currentPrice ASC";
 } else if ($ordering == "pricehigh") {
-  $sql .= " ORDER BY currentPrice DESC";
+  $sql .= " currentPrice DESC";
 } else if ($ordering == "date") {
-  $sql .= " ORDER BY auctionDate ASC";
+  $sql .= " auctionDate ASC";
 } else {
-  $sql .= " ORDER BY avgRating DESC, currentPrice ASC";
+  $sql .= " avgRating DESC, currentPrice ASC";
 }
 
 $result = $conn->query($sql);
@@ -231,7 +237,7 @@ $result = $conn->query($sql);
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
 $num_results = $result->num_rows; // TODO: Calculate me for real
-$results_per_page = 10;
+$results_per_page = 3;
 $curr_page = isset($_GET['page']) ? (int) $_GET['page'] : 1; // Get current page from URL or default to 1
 $max_page = ceil($num_results / $results_per_page);
 ?>
