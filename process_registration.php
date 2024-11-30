@@ -3,6 +3,7 @@
 include_once("db_connection.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $currentDate = date("Y-m-d");
     $role = $_POST['accountType'];
     // remove trailing whitespace with trim()
     $firstName = trim($_POST['firstName']);
@@ -36,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // ensure date not in the future
-    $currentDate = date("Y/m/d");
     if ($dateOfBirth > $currentDate) {
         die("Date of birth cannot be in the future. <a href='register.php'>Go back</a> and try again.");
     }

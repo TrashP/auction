@@ -206,27 +206,6 @@ if ($mysqli->query($sql) === TRUE) {
 
 
 
-
-
-
-
-// Add sample data to database
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
-        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
-$mysqli->query($sql);
-
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
-        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music', 'photos/gibson_les_paul_guitar.jpg');";
-$mysqli->query($sql);
-
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
-        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles', 'photos/charizard_card.jpg');";
-$mysqli->query($sql);
-
-$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
-        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', 'photos/gold_chain.jpg');";
-$mysqli->query($sql);
-
 $hashedPassword = password_hash('lmessi', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
         VALUES (1, 'Leo', 'Messi', '1990-07-23', 'leomessi@gmail.com', '$hashedPassword', 'Seller');";
@@ -250,6 +229,48 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (5, 'Chris', 'Nolan', '1982-03-01', 'chrisnolan@gmail.com', 'cnolan', 'Buyer');";
 $mysqli->query($sql);
 
+$sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
+        VALUES 
+        (6, 'Emma', 'Watson', '1992-04-15', 'emmawatson@gmail.com', 'ewatson', 'Buyer'),
+        (7, 'Robert', 'Downey', '1970-04-04', 'rdowney@gmail.com', 'rdowney', 'Seller');";
+$mysqli->query($sql);
+
+// Add sample data to database
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (1, 'Watch', 'Rolex platinum watch made in Switzerland', 'Fashion and Accessories', 'photos/rolex_submariner.jpg');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (2, 'Guitar', 'Gibson Les Paul guitar made in 1965 and signed by Jimmy Page. Great for playing the Blues or Rock n Roll.', 'Books, Movies and Music', 'photos/gibson_les_paul_guitar.jpg');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (3, 'Pokemon Card', 'Dragonite cards from 2001 in near-mint condition.', 'Art and Collectibles', 'photos/charizard_card.jpg');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', 'photos/gold_chain.jpg');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhotoPath)
+        VALUES 
+        (5, 'Smartphone', 'Latest Apple iPhone 15 Pro, 256GB, Graphite', 'Electronics and Gadgets', 'photos/iphone_15_pro.jpg'),
+        (6, 'Mountain Bike', 'Trek X-Caliber 9 with 29-inch wheels, ideal for trails', 'Sports and Outdoors', 'photos/trek_bike.jpg'),
+        (7, 'Painting', 'Original oil painting of a serene landscape by a renowned artist', 'Art and Collectibles', 'photos/oil_painting.jpg'),
+        (8, 'Vintage Car', '1965 Ford Mustang, fully restored to showroom condition', 'Automotive and Vehicles', 'photos/ford_mustang.jpg'),
+        (9, 'Dining Table Set', 'Solid oak dining table with 6 matching chairs', 'Home and Garden', 'photos/dining_table.jpg'),
+        (10, 'Fitness Tracker', 'Fitbit Versa 4, with advanced health monitoring features', 'Health and Beauty', 'photos/fitbit_versa.jpg');";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Items (itemName, itemDescription, category, itemPhotoPath)
+        VALUES 
+        ('Laptop', 'Dell XPS 15 with 16GB RAM and 512GB SSD', 'Electronics and Gadgets', 'photos/dell_xps_15.jpg'),
+        ('Electric Scooter', 'Xiaomi Mi Electric Scooter Pro 2', 'Sports and Outdoors', 'photos/xiaomi_scooter.jpg'),
+        ('Wristwatch', 'Seiko Presage Cocktail Time automatic watch', 'Fashion and Accessories', 'photos/seiko_presage.jpg'),
+        ('Book Collection', 'Complete works of J.R.R. Tolkien', 'Books, Movies and Music', 'photos/tolkien_books.jpg'),
+        ('Gaming Console', 'Sony PlayStation 5 with two controllers', 'Electronics and Gadgets', 'photos/ps5_console.jpg');";
+$mysqli->query($sql);
+
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, highestBidderID, quantity)
         VALUES (1, 1, 1, '2024-10-30 14:30:00', 40000, 80000, 4, 1);";
 $mysqli->query($sql);
@@ -266,6 +287,25 @@ $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPrice
         VALUES (4, 3, 4, '2024-07-02 18:45:01', 2000, 10000, 1);";
 $mysqli->query($sql);
 
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES 
+        (5, 2, 5, '2024-12-01 10:00:00', 900, 1200, 5),
+        (6, 3, 6, '2024-12-02 15:30:00', 1200, 2000, 2),
+        (7, 1, 7, '2024-12-03 17:00:00', 5000, 8000, 1),
+        (8, 1, 8, '2024-12-04 11:45:00', 15000, 25000, 1),
+        (9, 2, 9, '2024-12-05 09:20:00', 300, 800, 3),
+        (10, 3, 10, '2024-12-06 14:00:00', 100, 300, 10);";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
+        VALUES 
+        (11, 1, 11, '2024-12-07 12:00:00', 1200, 1500, 1),
+        (12, 2, 12, '2024-12-08 14:30:00', 400, 700, 3),
+        (13, 3, 13, '2024-12-09 16:00:00', 250, 400, 2),
+        (14, 1, 14, '2024-12-10 10:00:00', 100, 200, 1),
+        (15, 2, 15, '2024-12-11 18:00:00', 500, 800, 2);";
+$mysqli->query($sql);
+
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
         VALUES (1, 4, 1, 50000);";
 $mysqli->query($sql);
@@ -280,6 +320,16 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
         VALUES (5, 5, 1, 60000);";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Bids (bidID, userID, auctionID, bidAmountGBP)
+        VALUES 
+        (6, 4, 5, 950),
+        (7, 5, 5, 1000),
+        (8, 4, 6, 1500),
+        (9, 5, 7, 6000),
+        (10, 4, 8, 16000),
+        (11, 5, 10, 200);";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Watchlist (userID, auctionID, watching)
