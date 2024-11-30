@@ -208,11 +208,21 @@ $has_session = true;
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="proxy_bid_checkbox" name="proxy_bid_enabled" onclick="toggleProxyBidInput()">
           <label class="form-check-label" for="proxy_bid_checkbox">Enable Proxy Bid</label>
+
         </div>
         <button type="submit" class="btn btn-warning w-100" id="submit_proxy_bid" disabled>Set Proxy Bid</button>
       </form>
     </div>
     <?php endif; ?>
+
+    <script>
+          // Enable/disable max bid input and submit button based on checkbox state
+          function toggleProxyBidInput() {
+            var isChecked = document.getElementById('proxy_bid_checkbox').checked;
+            document.getElementById('max_bid').disabled = !isChecked;
+            document.getElementById('submit_proxy_bid').disabled = !isChecked;
+          }
+      </script>
 
     <!-- Place Your Bid -->
     <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
@@ -226,6 +236,7 @@ $has_session = true;
           </div>
           <input type="number" class="form-control" id="bid" name="bid" placeholder="Enter your bid" required>
         </div>
+
         <button type="submit" class="btn btn-primary w-100">Place Bid</button>
       </form>
     </div>
@@ -254,20 +265,6 @@ $has_session = true;
     </div>
   </div> <!-- End of right col with bidding info -->
 <?php endif; ?>
-
-
-
-<?php 
-  //TOOO 4:
-  // create a Proxy Bidding - Enable users to set a maximum bid amount and let the system bid incrementally on their behalf until the maximum is reached.
-  // Backend Implementation:
-  // Add a backend process to check and auto-bid when outbid, up to the user’s maximum amount.
-  // Database Usage:
-  // Add a ProxyBids table: userID(buyer), auctionID,  maxBid, currentBid. [DONE]
-
-
-?>
-
 
 
 <?php include_once("footer.php") ?>
@@ -342,3 +339,4 @@ $has_session = true;
 
   } // End of addToWatchlist func
 </script>
+

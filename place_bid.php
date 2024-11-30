@@ -85,6 +85,14 @@
                 $errors[] = "You must bid higher than your previous bid.";
             }
 
+            if ($bidAmountGBP < $startPrice) {
+                $errors[] = "Your bid must be higher than the starting price listed";
+            }
+
+            if ($bidAmountGBP < $currentPrice) {
+                $errors[] = "You must bid higher than the current price.";
+            }
+
             if ($accountType == "Seller") {
               $errors[] = "Sellers cannot place a bid.";
             }
@@ -125,11 +133,6 @@
                     die("Error updating auction: " . $result->error);
                 }
             }
-
-            // Check the current highest bid
-            $currentPriceQuery = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
-            $currentPriceResult = $conn->query($currentPriceQuery);
-            $currentPrice = $currentPriceResult->fetch_assoc()['currentPrice'];
             
             #for the person who has the highest proxy bid ceiling
             $proxyQuery = "SELECT userID, maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' AND maxBidGBP > '$bidAmountGBP' ORDER BY maxBidGBP DESC LIMIT 1";
