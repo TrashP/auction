@@ -129,7 +129,7 @@
                     die("Error updating auction: " . $result->error);
                 }
             }
-            
+             
             #for the person who has the highest proxy bid ceiling
             $proxyQuery = "SELECT userID, maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' AND maxBidGBP > '$bidAmountGBP' ORDER BY maxBidGBP DESC LIMIT 1";
             $proxyResult = $conn->query($proxyQuery);
