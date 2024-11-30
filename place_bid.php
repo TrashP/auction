@@ -117,12 +117,6 @@
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
 
-            // Check the current highest bid
-            $currentPriceQuery2 = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
-            $currentPriceResult2 = $conn->query($currentPriceQuery2);
-            $currentPrice2 = $currentPriceResult2->fetch_assoc()['currentPrice'];
-
-
             //update highest bidder id if necessary
             if ($bidAmountGBP > $maxUserBid) {
                 $updateAuctionQuery = "UPDATE Auctions SET highestBidderID = ? WHERE auctionID = ?";
@@ -138,6 +132,11 @@
                     die("Error updating auction: " . $result->error);
                 }
             }
+
+            // Check the current highest bid
+            $currentPriceQuery2 = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
+            $currentPriceResult2 = $conn->query($currentPriceQuery2);
+            $currentPrice2 = $currentPriceResult2->fetch_assoc()['currentPrice'];
              
             #for the person who has the highest proxy bid ceiling
             $proxyQuery = "SELECT userID, maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' AND maxBidGBP > '$bidAmountGBP' ORDER BY maxBidGBP DESC LIMIT 1";
