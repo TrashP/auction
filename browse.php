@@ -218,7 +218,12 @@ if ($ordering == "pricelow") {
 } else if ($ordering == "pricehigh") {
   $sql .= " ORDER BY currentPrice DESC";
 } else if ($ordering == "date") {
-  $sql .= " ORDER BY auctionDate ASC";
+  $sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,
+  auctionDate ASC";
 } else {
   $sql .= " ORDER BY avgRating DESC, currentPrice ASC";
 }
