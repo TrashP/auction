@@ -66,7 +66,6 @@
   $messageData = getMessagesForAuction($conn, $auction_id);
 
 
-//   print_r($messageData);
 
 
 
@@ -126,11 +125,10 @@
         <?php if ($user_role === 'Seller'): ?>
             <p class="text-center text-muted">No questions in forum.</p>
         <?php endif; ?>
-
    
     <?php else: ?>
-   
-   
+        
+
         <!-- Display existing messages -->
         <?php foreach ($messageData as $message): ?>
             

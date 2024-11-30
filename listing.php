@@ -158,6 +158,8 @@ $has_session = true;
       <h5 style="color: red;">Auction Ended</h5>
       <p><strong>Ended On:</strong> <?php echo (date_format($end_time, 'j M H:i')) ?></p>
     </div>
+    
+    <a href="forum.php?auctionID=<?php echo $auctionID; ?>&itemName=<?php echo $item['itemName']; ?>" name="clicked_forum" class="btn btn-secondary w-100" style="margin-top: 5px;">Q&A Forum</a>
   <?php else: ?>
 
     <!-- Auction Details -->

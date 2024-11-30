@@ -252,7 +252,7 @@ function getMessagesForAuction($conn, $auction_id)
             m.seller_message,
             m.sent_date_buyer,
             m.sent_date_seller,
-            GREATEST(m.sent_date_buyer, m.sent_date_seller) AS latest_date
+            GREATEST(COALESCE(m.sent_date_seller, m.sent_date_buyer), m.sent_date_buyer) AS latest_date
         FROM 
             Messages m
         JOIN 
@@ -262,6 +262,7 @@ function getMessagesForAuction($conn, $auction_id)
         ORDER BY 
             latest_date DESC
     ";
+
 
     
 
