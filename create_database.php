@@ -80,6 +80,7 @@ $sql = "CREATE TABLE IF NOT EXISTS Auctions
         reservePriceGBP INT NOT NULL,
         highestBidderID INT,
         quantity INT NOT NULL,
+        processed BOOLEAN DEFAULT FALSE,
         FOREIGN KEY (userID) REFERENCES Users(userID),
         FOREIGN KEY (itemID) REFERENCES Items(itemID)
         )";
