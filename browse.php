@@ -213,34 +213,20 @@ WHERE Items.category = '$category' AND itemName LIKE '%$keyword%'
 GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
+$sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,";
+  
 if ($ordering == "pricelow") {
-  $sql .= " ORDER BY 
-  CASE
-    WHEN auctionDate >= CURRENT_DATE THEN 1
-    ELSE 2
-  END,
-  currentPrice ASC";
+  $sql .= " currentPrice ASC";
 } else if ($ordering == "pricehigh") {
-  $sql .= " ORDER BY 
-  CASE
-    WHEN auctionDate >= CURRENT_DATE THEN 1
-    ELSE 2
-  END,
-  currentPrice DESC";
+  $sql .= " currentPrice DESC";
 } else if ($ordering == "date") {
-  $sql .= " ORDER BY 
-  CASE
-    WHEN auctionDate >= CURRENT_DATE THEN 1
-    ELSE 2
-  END,
-  auctionDate ASC";
+  $sql .= " auctionDate ASC";
 } else {
-  $sql .= " ORDER BY 
-  CASE
-    WHEN auctionDate >= CURRENT_DATE THEN 1
-    ELSE 2
-  END,
-  avgRating DESC, currentPrice ASC";
+  $sql .= " avgRating DESC, currentPrice ASC";
 }
 
 $result = $conn->query($sql);
