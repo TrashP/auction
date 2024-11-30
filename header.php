@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Europe/London');
 ?>
 
 
@@ -51,6 +52,9 @@ session_start();
           <a class="nav-link" href="mybids.php">My Bids</a>
         </li>
         <li class="nav-item mx-1">
+          <a class="nav-link" href="my_purchases.php">My Purchases</a>
+        </li>
+        <li class="nav-item mx-1">
           <a class="nav-link" href="recommendations.php">Recommended</a>
         </li>
         <li class="nav-item mx-1">
@@ -60,11 +64,12 @@ session_start();
       if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
         echo ('
         <li class="nav-item mx-1">
-          <a class="nav-link" href="mylistings.php">My Listings</a>
+          <a class="nav-link" href="mylistings.php">My Dashboard</a>
         </li>
-        <li class="nav-item ml-3">
-          <a class="nav-link btn border-light" href="create_auction.php">+ Create auction</a>
-        </li>');
+        <li class="nav-item mx-1">
+          <a class="nav-link" href="create_auction.php">Create Auction</a>
+        </li>
+        ');
       }
       ?>
       <li>
