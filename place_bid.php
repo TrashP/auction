@@ -85,14 +85,6 @@
                 $errors[] = "You must bid higher than your previous bid.";
             }
 
-            if ($bidAmountGBP < $startPrice) {
-                $errors[] = "Your bid must be higher than the starting price listed";
-            }
-
-            if ($bidAmountGBP < $currentPrice) {
-                $errors[] = "You must bid higher than the current price.";
-            }
-
             if ($accountType == "Seller") {
               $errors[] = "Sellers cannot place a bid.";
             }
@@ -117,6 +109,7 @@
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
 
+
             //update highest bidder id if necessary
             if ($bidAmountGBP > $maxUserBid) {
                 $updateAuctionQuery = "UPDATE Auctions SET highestBidderID = ? WHERE auctionID = ?";
@@ -137,15 +130,15 @@
             $currentPriceQuery2 = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
             $currentPriceResult2 = $conn->query($currentPriceQuery2);
             $currentPrice2 = $currentPriceResult2->fetch_assoc()['currentPrice'];
-             
+            
             #for the person who has the highest proxy bid ceiling
-            $proxyQuery = "SELECT userID, maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' AND maxBidGBP > '$bidAmountGBP' ORDER BY maxBidGBP DESC LIMIT 1";
+            $proxyQuery = "SELECT userID, MAX(maxBidGBP) as maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' ORDER BY maxBidGBP DESC LIMIT 1";
             $proxyResult = $conn->query($proxyQuery);
+            $proxyBid = $proxyResult->fetch_assoc();
+            $proxyUserID = $proxyBid['userID'];
+            $proxyMaxBid = $proxyBid['maxBidGBP'];
 
-            if ($proxyResult->num_rows > 0) {
-                $proxyBid = $proxyResult->fetch_assoc();
-                $proxyUserID = $proxyBid['userID'];
-                $proxyMaxBid = $proxyBid['maxBidGBP'];
+            if ($proxyResult->num_rows > 0 && (int)$userID !== (int)$proxyUserID) {
                 $proxyBidAmount = min($proxyMaxBid, $currentPrice2 + 1);
         
                 $proxyInsertQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ('$proxyUserID', '$auctionID', '$proxyBidAmount')";
@@ -164,6 +157,14 @@
                 echo '<div class="alert alert-success mt-3" role="alert">
                         <h2>Bid Successfully Submitted</h2>
                         <p><strong>Bid Amount:</strong> £' . number_format(htmlspecialchars($bidAmountGBP), 2) . '</p>';
+
+                // Check if proxy bidding is enabled
+                // if ($isProxyBidEnabled) {
+                //     echo '<p><strong>Proxy Bid Status:</strong> Enabled</p>';
+                //     echo '<p><strong>Maximum Proxy Bid:</strong> £' . number_format(htmlspecialchars($maxBidGBP), 2) . '</p>';
+                // } else {
+                //     echo '<p><strong>Proxy Bid Status:</strong> Not Enabled</p>';
+                // }
 
                 $listingLink = "listing.php?itemID=" . urlencode($itemID) . "&auctionID=" . urlencode($auctionID);
                 echo '<div class="text-center mt-3">

@@ -61,12 +61,17 @@ $watchStmt->execute();
 $watchResult = $watchStmt->get_result();
 $watching = $watchResult->num_rows > 0 ? $watchResult->fetch_assoc()['watching'] : false;
 
+
 // DELETEME: For now, using placeholder data.
 $title = strtoupper($item['itemName']);
 $description = $item['itemDescription'];
 $photo = $item['itemPhotoPath'];
 $start_price = $auction['startPriceGBP'];
 $current_price = $bids['currentPrice'];
+// Check if current price is less than start price
+if ($current_price < $start_price) {
+  $current_price = $start_price;
+}
 $max_user_bid = $bids['maxUserBid'];
 $num_bids = $bids['numBids'] ;
 $end_time = new DateTime($auction['auctionDate']);
@@ -102,19 +107,6 @@ if (empty($num_bids)) {
 if (empty($end_time)) {
   $errors[] = "Something went wrong... Could not get auction end time.";
 }
-
-
-// if (!empty($errors)) {
-//   // Display errors
-//   echo '<div class="alert alert-danger"><ul>';
-//   foreach ($errors as $error) {
-//     echo "<li>$error</li>";
-//   }
-//   $browseLink = "browse.php";
-//   echo '<div class="text-center"><a href="' . $browseLink . '">Go back to the browse page.</a></div>';
-//   mysqli_close($conn);
-//   exit();
-// }
 
 
 // TODO: Note: Auctions that have ended may pull a different set of data,
@@ -195,9 +187,17 @@ $has_session = true;
     </div>
 
     <!-- Proxy Bid Section -->
+    <?php
+      $proxyBidsQuery = "SELECT COALESCE(MAX(maxBidGBP),0) AS proxyBidCeiling
+                FROM ProxyBids 
+                WHERE auctionID = $auctionID AND userID = $userID";
+      $proxyBidsResult = $conn->query($proxyBidsQuery);
+      $proxyBidCeiling = $proxyBidsResult->fetch_assoc()['proxyBidCeiling'];
+    ?>
     <?php if ($_SESSION['account_type'] == 'Buyer'): ?>
     <div class="card p-3 mb-3">
       <h5>Your Proxy Bid</h5>
+      <p class="lead"><strong>Your Current Proxy Bid Ceiling:</strong> £<?php echo (number_format($proxyBidCeiling, 2)) ?></p>
       <form method="POST" action="update_proxy_bid.php?auctionID=<?= $auctionID ?>&userID=<?= $userID ?>">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
