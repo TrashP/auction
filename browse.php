@@ -214,9 +214,19 @@ GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 }
 
 if ($ordering == "pricelow") {
-  $sql .= " ORDER BY currentPrice ASC";
+  $sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,
+  currentPrice ASC";
 } else if ($ordering == "pricehigh") {
-  $sql .= " ORDER BY currentPrice DESC";
+  $sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,
+  currentPrice DESC";
 } else if ($ordering == "date") {
   $sql .= " ORDER BY 
   CASE
@@ -225,7 +235,12 @@ if ($ordering == "pricelow") {
   END,
   auctionDate ASC";
 } else {
-  $sql .= " ORDER BY avgRating DESC, currentPrice ASC";
+  $sql .= " ORDER BY 
+  CASE
+    WHEN auctionDate >= CURRENT_DATE THEN 1
+    ELSE 2
+  END,
+  avgRating DESC, currentPrice ASC";
 }
 
 $result = $conn->query($sql);
