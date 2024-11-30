@@ -145,7 +145,7 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if ($user_role === 'Seller' && empty($message['seller_message'])): ?>
+                <?php if ($user_role === 'Seller' && empty($message['seller_message']) && $user_id === $message["seller_id"]): ?>
                     <!-- Reply button for seller -->
                     <form action="process_seller_reply.php?itemName=<?php echo $item_name; ?>&auctionID=<?php echo $auction_id; ?>" method="POST" class="reply-btn">
                         <input type="hidden" name="message_id" value="<?php echo $message['message_id']; ?>">

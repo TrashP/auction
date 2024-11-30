@@ -249,6 +249,7 @@ function getMessagesForAuction($conn, $auction_id)
             u_buyer.firstName AS buyer_name,
             u_buyer.lastName AS buyer_lastname,
             m.buyer_message,
+            m.seller_id,
             m.seller_message,
             m.sent_date_buyer,
             m.sent_date_seller,
