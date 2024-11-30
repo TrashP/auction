@@ -43,7 +43,7 @@
                 FROM Bids b3
                 WHERE b3.userID = $userID
                 AND b3.auctionID = a1.auctionID
-            ) AND auctionDate >= CURRENT_DATE
+            ) AND auctionDate > NOW()
             GROUP BY Items.itemID, itemName, itemDescription, a1.startPriceGBP, a1.auctionID, a1.auctionDate;";
 
     $resultrec = $conn->query($sql);
@@ -96,7 +96,7 @@
           INNER JOIN Auctions USING (itemID)
           INNER JOIN Bids ON Auctions.auctionID = Bids.auctionID
           WHERE Bids.userID = $userID
-        ) AND auctionDate >= CURRENT_DATE
+        ) AND auctionDate > NOW()
         GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
     $resultrec = $conn->query($sql);

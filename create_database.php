@@ -211,6 +211,7 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (1, 'Leo', 'Messi', '1990-07-23', 'leomessi@gmail.com', '$hashedPassword', 'Seller');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('tswift', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
         VALUES (2, 'Taylor', 'Swift', '1991-01-25', 'taylorswift@gmail.com', 'tswift', 'Seller');";
 $mysqli->query($sql);
@@ -225,8 +226,9 @@ $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, pass
         VALUES (4, 'Chris', 'Martin', '1985-07-11', 'chrismartin@gmail.com', '$hashedPassword', 'Buyer');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('cnolan', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
-        VALUES (5, 'Chris', 'Nolan', '1982-03-01', 'chrisnolan@gmail.com', 'cnolan', 'Buyer');";
+        VALUES (5, 'Chris', 'Nolan', '1982-03-01', 'chrisnolan@gmail.com', '$hashedPassword', 'Buyer');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
@@ -289,8 +291,8 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Auctions (auctionID, userID, itemID, auctionDate, startPriceGBP, reservePriceGBP, quantity)
         VALUES 
-        (5, 2, 5, '2024-12-01 10:00:00', 900, 1200, 5),
-        (6, 3, 6, '2024-12-02 15:30:00', 1200, 2000, 2),
+        (5, 2, 5, '2024-11-30 16:09:00', 900, 1200, 5),
+        (6, 3, 6, '2024-11-30 15:18:00', 1200, 2000, 2),
         (7, 1, 7, '2024-12-03 17:00:00', 5000, 8000, 1),
         (8, 1, 8, '2024-12-04 11:45:00', 15000, 25000, 1),
         (9, 2, 9, '2024-12-05 09:20:00', 300, 800, 3),
