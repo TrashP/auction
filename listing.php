@@ -174,7 +174,7 @@ $has_session = true;
       <p><strong>Auction End Date:</strong> <?php echo (date_format($end_time, 'j M H:i') . $time_remaining) ?></p>
       <p class="lead"><strong>Current Highest Bid:</strong> £<?php echo (number_format($current_price, 2)) ?></p>
       <?php if ($_SESSION['account_type'] == 'Buyer' && $now < $end_time): ?>
-        <form method="POST" action="watchlist_funcs.php">
+        <form method="POST" action="watchlist.php.php">
           <input type="hidden" name="auctionID" value="<?= $auctionID ?>">
           <input type="hidden" name="userID" value="<?= $userID ?>">
           <input type="hidden" name="itemID" value="<?= $itemID ?>">
@@ -278,7 +278,7 @@ $has_session = true;
 
     // This performs an asynchronous call to a PHP function using POST method.
     // Sends item ID as an argument to that function.
-    $.ajax('watchlist_funcs.php', {
+    $.ajax('watchlist.php.php', {
       type: "POST",
       data: { functionname: 'add_to_watchlist', arguments: [<?php echo ($item_id); ?>] },
 

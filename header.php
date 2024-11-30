@@ -58,7 +58,7 @@ date_default_timezone_set('Europe/London');
           <a class="nav-link" href="recommendations.php">Recommended</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link" href="watchlist_funcs.php">Watchlist</a>
+          <a class="nav-link" href="watchlist.php.php">Watchlist</a>
         </li>');
       }
       if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
