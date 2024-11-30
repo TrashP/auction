@@ -227,8 +227,9 @@ $sql = "INSERT INTO Items (itemID, itemName, itemDescription, category, itemPhot
         VALUES (4, 'Chain', 'Gold Chain for men', 'Fashion and Accessories', 'photos/gold_chain.jpg');";
 $mysqli->query($sql);
 
+$hashedPassword = password_hash('lmessi', PASSWORD_DEFAULT);
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
-        VALUES (1, 'Leo', 'Messi', '1990-07-23', 'leomessi@gmail.com', 'lmessi', 'Seller');";
+        VALUES (1, 'Leo', 'Messi', '1990-07-23', 'leomessi@gmail.com', '$hashedPassword', 'Seller');";
 $mysqli->query($sql);
 
 $sql = "INSERT INTO Users (userID, firstName, lastName, dateOfBirth, email, password, role)
@@ -283,6 +284,17 @@ $mysqli->query($sql);
 
 $sql = "INSERT INTO Watchlist (userID, auctionID, watching)
         VALUES (4, 4, TRUE);";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO Ratings (userID, auctionID, rating, comment) 
+        VALUES 
+        (4, 1, '5', 'Excellent auction, smooth process.'),
+        (5, 2, '4', 'Good experience, item as described.'),
+        (6, 3, '3', 'Item was okay, but packaging could be better.'),
+        (4, 5, '5', 'Great communication, highly recommended!'),
+        (5, 6, '2', 'Item arrived late and not as described.'),
+        (4, 2, '5', 'The guitar is amazing, just as described!');";
+
 $mysqli->query($sql);
 
 $mysqli->close();
