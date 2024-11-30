@@ -1,6 +1,9 @@
 <?php include_once("header.php") ?>
 <?php require("utilities.php") ?>
-
+<?php
+ini_set('display_errors', 0); // Disable error display
+error_reporting(E_ERROR | E_PARSE); // Show only errors and parse errors
+?>
 <div class="container">
 
   <h2 class="my-3">Browse listings</h2>
@@ -215,7 +218,7 @@ GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
 $sql .= " ORDER BY 
   CASE
-    WHEN auctionDate >= NOW() THEN 1
+    WHEN auctionDate > NOW() THEN 1
     ELSE 2
   END,";
 
@@ -234,7 +237,7 @@ $result = $conn->query($sql);
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
 $num_results = $result->num_rows; // TODO: Calculate me for real
-$results_per_page = 3;
+$results_per_page = 5;
 $curr_page = isset($_GET['page']) ? (int) $_GET['page'] : 1; // Get current page from URL or default to 1
 $max_page = ceil($num_results / $results_per_page);
 ?>
@@ -267,6 +270,7 @@ $max_page = ceil($num_results / $results_per_page);
       $res = $results_per_page;
       echo "<h5>All Items available for auction:</h5>";
       while ($row = $result->fetch_assoc()) {
+        // var_dump($row);
         if ($skip == 0 and $res != 0) {
 
 

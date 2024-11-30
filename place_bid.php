@@ -13,6 +13,7 @@
             if (session_status() === PHP_SESSION_NONE) {
                 session_start(); // Start the session only if it hasn't been started already
             }
+            require 'email_functions.php';
 
             //check if logged in???
 
@@ -30,6 +31,19 @@
             }
 
             $errors = [];
+
+            // Check the current highest bid
+            $currentPriceQuery = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
+            $currentPriceResult = $conn->query($currentPriceQuery);
+            $currentPrice = $currentPriceResult->fetch_assoc()['currentPrice'];
+
+            $startPriceQuery = "SELECT startPriceGBP from Auctions WHERE auctionID = '$auctionID'";
+            $startPriceResult = $conn->query($startPriceQuery);
+            if ($startPriceResult->num_rows === 0) {
+                echo "Error: Auction not found.";
+                exit();
+            }
+            $startPrice = $startPriceResult->fetch_assoc()['startPriceGBP'];
 
             /*----------Blank value errors----------*/
             //Checks if all required fields are blank
@@ -59,8 +73,24 @@
                 $errors[] = "Starting price must be a positive number.";
             }
 
+            if ($bidAmountGBP < $startPrice) {
+                $errors[] = "Your bid must be higher than the starting price listed";
+            }
+
+            if ($bidAmountGBP <= $currentPrice) {
+                $errors[] = "You must bid higher than the current price.";
+            }
+
             if ($maxUserBid >= $bidAmountGBP) {
                 $errors[] = "You must bid higher than your previous bid.";
+            }
+
+            if ($bidAmountGBP < $startPrice) {
+                $errors[] = "Your bid must be higher than the starting price listed";
+            }
+
+            if ($bidAmountGBP < $currentPrice) {
+                $errors[] = "You must bid higher than the current price.";
             }
 
             if ($accountType == "Seller") {
@@ -98,16 +128,11 @@
                 $result->bind_param("ii", $userID, $auctionID);
             
                 if ($result->execute()) {
-                    echo "Auction table updated with new highest bidder.<br>";
+                    // echo "Auction table updated with new highest bidder.<br>";
                 } else {
                     die("Error updating auction: " . $result->error);
                 }
             }
-
-            // Check the current highest bid
-            $currentPriceQuery = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
-            $currentPriceResult = $conn->query($currentPriceQuery);
-            $currentPrice = $currentPriceResult->fetch_assoc()['currentPrice'];
             
             #for the person who has the highest proxy bid ceiling
             $proxyQuery = "SELECT userID, maxBidGBP FROM ProxyBids WHERE auctionID = '$auctionID' AND maxBidGBP > '$bidAmountGBP' ORDER BY maxBidGBP DESC LIMIT 1";
@@ -150,6 +175,60 @@
                     </div>';
             }
 
+            
+            // Notify users watching the item
+            $watchlistQuery = "
+            SELECT u.email, u.firstName
+            FROM Watchlist w
+            JOIN Users u ON w.userID = u.userID
+            WHERE w.auctionID = ? AND w.watching = TRUE
+            ";
+            $watchlistStmt = $conn->prepare($watchlistQuery);
+            $watchlistStmt->bind_param("i", $auctionID);
+            $watchlistStmt->execute();
+            $watchlistResult = $watchlistStmt->get_result();
+
+            // Fetch auction details
+            $auctionDetailsQuery = "
+            SELECT a.startPriceGBP, a.highestBidderID, i.itemName
+            FROM Auctions a
+            JOIN Items i ON a.itemID = i.itemID
+            WHERE a.auctionID = ?
+            ";
+            $auctionDetailsStmt = $conn->prepare($auctionDetailsQuery);
+            $auctionDetailsStmt->bind_param("i", $auctionID);
+            $auctionDetailsStmt->execute();
+            $auctionDetails = $auctionDetailsStmt->get_result()->fetch_assoc();
+
+            $itemName = $auctionDetails['itemName'];
+            $currentPrice = $bidAmountGBP;
+
+            while ($watcher = $watchlistResult->fetch_assoc()) {
+            $watcherEmail = $watcher['email'];
+            $watcherName = $watcher['firstName'];
+
+            $subject = "New Bid Placed on Item: $itemName";
+            $message = "
+                Dear $watcherName,
+
+                A new bid has been placed on the item you're watching: $itemName.
+
+                Current highest bid: £$currentPrice.
+
+                Visit the auction to view details or place your bid.
+
+                Best regards,
+                Auction System
+            ";
+
+            sendEmail($watcherName, $watcherEmail, $subject, $message);
+            }
+
+
+
+            $watchlistStmt->close();
+            $auctionDetailsStmt->close();
+            $conn->close();
 ?>
 
 <?php include_once("footer.php")?>
