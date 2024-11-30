@@ -8,6 +8,12 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start(); // Start the session only if it hasn't been started already
 }
 
+// Ensure user is logged in
+if (!isset($_SESSION['userID'])) {
+  header("Location: register.php"); // Redirect to login page if not logged in
+  exit();
+}
+
 // Get info from the URL:
 $itemID = $_GET['itemID'];
 $auctionID = $_GET['auctionID'];
