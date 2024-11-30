@@ -215,7 +215,7 @@ GROUP BY Items.itemID, itemName, itemDescription, startPriceGBP, auctionDate";
 
 $sql .= " ORDER BY 
   CASE
-    WHEN auctionDate >= CURRENT_DATE THEN 1
+    WHEN auctionDate >= NOW() THEN 1
     ELSE 2
   END,";
 
