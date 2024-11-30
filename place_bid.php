@@ -108,6 +108,11 @@
             $placeBidQuery = "INSERT INTO Bids (userID, auctionID, bidAmountGBP) VALUES ($userID, $auctionID, $bidAmountGBP)";
             $placeBidResult = $conn->query($placeBidQuery);
 
+            // Check the current highest bid
+            $currentPriceQuery2 = "SELECT COALESCE(MAX(bidAmountGBP), 0) AS currentPrice FROM Bids WHERE auctionID = '$auctionID'";
+            $currentPriceResult2 = $conn->query($currentPriceQuery2);
+            $currentPrice2 = $currentPriceResult2->fetch_assoc()['currentPrice'];
+
 
             //update highest bidder id if necessary
             if ($bidAmountGBP > $maxUserBid) {
@@ -151,14 +156,6 @@
                 echo '<div class="alert alert-success mt-3" role="alert">
                         <h2>Bid Successfully Submitted</h2>
                         <p><strong>Bid Amount:</strong> £' . number_format(htmlspecialchars($bidAmountGBP), 2) . '</p>';
-
-                // Check if proxy bidding is enabled
-                // if ($isProxyBidEnabled) {
-                //     echo '<p><strong>Proxy Bid Status:</strong> Enabled</p>';
-                //     echo '<p><strong>Maximum Proxy Bid:</strong> £' . number_format(htmlspecialchars($maxBidGBP), 2) . '</p>';
-                // } else {
-                //     echo '<p><strong>Proxy Bid Status:</strong> Not Enabled</p>';
-                // }
 
                 $listingLink = "listing.php?itemID=" . urlencode($itemID) . "&auctionID=" . urlencode($auctionID);
                 echo '<div class="text-center mt-3">
