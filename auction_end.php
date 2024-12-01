@@ -42,16 +42,30 @@ if ($result->num_rows > 0) {
 
         // Send email to the auction owner
         $subjectOwner = "Auction #$auctionID for '$itemName' Has Ended";
-        $messageOwner = "Dear $ownerName,\n\nYour auction (ID: $auctionID, Item: $itemName) has ended. Please review the results and contact the highest bidder if applicable.";
+        $messageOwner = "
+        <p>Dear $ownerName,</p>
+        <p>Your auction has ended:</p>
+        <ul>
+            <li><strong>Item:</strong> $itemName</li>
+        </ul>
+        <p>Please review the results and contact the highest bidder if applicable.</p>
+        <p>Best regards,<br>The Auction Team</p>";
         echo "sent email to owner ";
+
+
         sendEmail($ownerName, $ownerEmail, $subjectOwner, $messageOwner);
 
         // Send email to the highest bidder (if there is a winner)
         if (!empty($bidderEmail)) {
             $subjectBidder = "Congratulations on Winning Auction #$auctionID";
-            $messageBidder = "Dear $bidderName,\n\nCongratulations! You have won the auction 
-                              (ID: $auctionID, Item: $itemName). Please contact the auction owner for further details.";
-            echo "sent email to highest bidder";
+            $messageBidder = "
+                <p>Dear $bidderName,</p>
+                <p>Congratulations! You have won the auction:</p>
+                <ul>
+                    <li><strong>Item:</strong> $itemName</li>
+                </ul>
+                <p>Please contact the auction owner for further details.</p>
+                <p>Best regards,<br>The Auction Team</p>";
             sendEmail($bidderName, $bidderEmail, $subjectBidder, $messageBidder);
         }
 
